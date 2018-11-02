@@ -21,10 +21,17 @@ module.exports = {
                 ]
             },
             {
-                test: /\.js$/,
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 use: [
                     'babel-loader'
+                ]
+            },
+            {
+                test: /\.(png|svg|jpg|gif|jpeg|ico)$/,
+                exclude: /node_modules/,
+                use: [
+                    'file-loader'
                 ]
             }
         ]
@@ -32,7 +39,8 @@ module.exports = {
     resolve: {
         modules: [
             path.resolve(__dirname, 'src'),
-            'node_modules'
+            'node_modules',
+            path.resolve(__dirname, 'assets')
         ]
     },
     plugins: [
@@ -41,7 +49,8 @@ module.exports = {
             title: 'My Course Schedule',
             filename: 'index.html',
             hash: true,
-            template: 'template.html'
+            template: 'template.html',
+            favicon: 'assets/favicon.ico'
         })
     ],
 };
