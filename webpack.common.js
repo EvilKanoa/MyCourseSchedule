@@ -1,25 +1,20 @@
 const path = require('path');
+
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     entry: {
         app: './src/index.js'
     },
     output: {
-        filename: '[name].bundle.js',
+        filename: '[name].[hash].bundle.js',
         path: path.resolve(__dirname, 'dist')
     },
+    stats: 'verbose',
     module: {
         rules: [
-            {
-                test: /\.css$/,
-                exclude: /node_modules/,
-                use: [
-                    'style-loader',
-                    'css-loader'
-                ]
-            },
             {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
@@ -33,6 +28,15 @@ module.exports = {
                 use: [
                     'file-loader'
                 ]
+            },
+            {
+                test: /\.(sa|sc|c)ss$/,
+                exclude: /node_modules/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    'sass-loader'
+                ]
             }
         ]
     },
@@ -45,12 +49,16 @@ module.exports = {
     },
     plugins: [
         new CleanWebpackPlugin(['dist']),
+        new MiniCssExtractPlugin({
+            filename: '[name].[hash].css',
+            chunkFilename: '[id].[hash].css'
+        }),
         new HtmlWebpackPlugin({
             title: 'My Course Schedule',
             filename: 'index.html',
             hash: true,
             template: 'template.html',
             favicon: 'assets/favicon.ico'
-        })
+        }),
     ],
 };
