@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 import {withRouter} from 'react-router-dom';
 import Sidebar from 'components/Sidebar';
 
