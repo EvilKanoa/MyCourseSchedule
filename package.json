@@ -11,6 +11,10 @@
     "build": "webpack --config webpack.prod.js",
     "prod": "npm run build && http-server \"./dist\" -p 80 --utc"
   },
+  "engines": {
+    "node": ">=8",
+    "npm": ">=4"
+  },
   "author": "Kanoa Haley",
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
