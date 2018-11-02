@@ -1,4 +1,9 @@
 language: node_js
 node_js:
-  - "8"
+- '8'
 cache: npm
+deploy:
+  provider: heroku
+  api_key:
+    secure: ixkh9LOyC33AHn9kL+U5V/7/yPUERw205KNno1Fn7SZhzx7EUwk1J34EHMz2GvKxOrVb4Uct3DXgmu7h5VgiplGJLZvjltgBqh1tnXTl3PBWfi+NTFEx0SNdumqcG0Lfg/xQUnuCU3/H/J7+TckKCuleKHB1CM0yx+WuOy2hbRt1sdHVWwfTrWFTFCa6EGcbWaI9Y5OmsSFdsZ1Tgc7ybg+LNTZTYsvEXNS6CMLfoFGWU1Rd6Unlx/O1d2rgm0MzAXG2RPOb//PZI7yvJ1pmuYa7CpV+PUTuD84aT1fffVkbfcSEwHlIlgI6qRcN4QCSmX+j9NDI2C/jbtFtkL9xJiYyH4/FSmyeMuBbQ8pxjn6VGPJYheAU7s7An3YT89+kY/ot2j2DygHVbNFU5KquZsRNn+XrIKoncYSD/KspHuYIeMeGa4A9QADZj5Ee7suK7bSrcKqKauz9pE5+wbfaEvrTMhAK8S/uQyepT1YY2VB7KhX+cQ/Kg0ny64T/+w7NhK2U/Xd1omkBzGWHt8W9UF8fC2cD1Rb1lLvPWs/Ds7qUrliOqD4OngRCeGYGjbwWnt9qGVW6WXOd6fYRM+ErY/rYrRs4roU0VyO7IeOY0tH07shv2g4pALRrR3WVvIWtj2gNAEjogqzzsn4Oo2SgDYlgk6LeuPX2kDwyftYqlDw=
+  app: my-course-schedule
