@@ -1,0 +1,11 @@
+@import '_variables.scss';
+
+#topbar {
+  width: 100vw;
+  height: $topbar-height;
+
+  > #header-image {
+    height: $topbar-height;
+    width: auto;
+  }
+}

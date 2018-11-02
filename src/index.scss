@@ -1,0 +1,50 @@
+@import '_variables.scss';
+
+body {
+  // font stack generated from https://www.cssfontstack.com/Tahoma
+  font-family: $font-stack;
+  font-size: 15px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 100;
+  line-height: 24px;
+  h1 {
+    font-family: $font-stack;
+    font-size: 24px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 700;
+    line-height: 24px;
+  }
+  h2, h3 {
+    font-family: $font-stack;
+    font-size: 19px;
+    font-style: normal;
+    font-variant: small-caps;
+    font-weight: 700; line-height: 24px;
+  }
+  p {
+    font-family: $font-stack;
+    font-size: 15px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 100;
+    line-height: 24px;
+  }
+  blockquote {
+    font-family: $font-stack;
+    font-size: 19px;
+    font-style: italic;
+    font-variant: normal;
+    font-weight: 100;
+    line-height: 24px;
+  }
+  pre {
+    font-family: $font-stack;
+    font-size: 12px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 24px;
+  }
+}
