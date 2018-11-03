@@ -16,7 +16,7 @@
     "npm": ">=4"
   },
   "author": "Kanoa Haley",
-  "browserslist": "> 0.25%, not dead",
+  "browserslist": "> 0.01%",
   "dependencies": {
     "@babel/core": "7.1.2",
     "@babel/plugin-proposal-class-properties": "7.1.0",

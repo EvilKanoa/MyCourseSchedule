@@ -31,10 +31,18 @@ const getDayIndex = (day) => _.findIndex(DAYS, (test) =>
     day.trim().toLowerCase() === test.toLowerCase() || day.trim().toLowerCase() === `${test}s`.toLowerCase()
 );
 
+const floor = (x) => ~~x;
+
 class WeekCalendar extends PureComponent {
-    static rowHeaderFormatter = (minutes) => (
+    static rowHeaderRenderer = (minutes) => (
         <span>
             { _.padStart(Math.floor(minutes / 60), 2, '0') }:{ _.padStart(minutes % 60, 2, '0') }
+        </span>
+    );
+
+    static eventRenderer = (event) => (
+        <span>
+            { event.content }
         </span>
     );
 
@@ -44,12 +52,14 @@ class WeekCalendar extends PureComponent {
         start: PropTypes.number,
         end: PropTypes.number,
         weekStart: dayTypeValidator,
-        rowHeaderFormatter: PropTypes.func,
+        rowHeaderRenderer: PropTypes.func,
+        eventRenderer: PropTypes.func,
         events: PropTypes.arrayOf(PropTypes.shape({
             days: PropTypes.arrayOf(dayTypeValidator).isRequired,
             start: PropTypes.number.isRequired,
             end: PropTypes.number.isRequired,
         })),
+        precision: PropTypes.number,
     };
 
     static defaultProps = {
@@ -58,68 +68,87 @@ class WeekCalendar extends PureComponent {
         weekStart: 'monday',
         start: 0,
         end: 24 * 60,
-        rowHeaderFormatter: WeekCalendar.rowHeaderFormatter,
+        rowHeaderRenderer: WeekCalendar.rowHeaderRenderer,
+        eventRenderer: WeekCalendar.eventRenderer,
         events: [{
             days: ['monday', 'TUESDAYS'],
             start: 30,
             end: 60,
-            id: 'first'
+            content: 'first'
         },{
             days: ['monday', 'wednesdays', 'friday'],
-            start: 120,
-            end: 140,
-            id: 'second'
+            start: 135,
+            end: 200,
+            content: 'second'
         },{
             days: ['SUNday', 'SAturdays', 'thursday'],
             start: 200,
             end: 255,
-            id: 'third'
+            content: 'third'
         }],
+        precision: 5,
     };
 
-    getHeader = defaultMemoize((days, weekStart) => {
+    gridify = (x) => floor(x / this.props.precision)
+
+    getHeaders = defaultMemoize((days, weekStart) => {
         const startIndex = getDayIndex(weekStart);
-        return (
-            <thead>
-            <tr>
-                <th></th>
-                {_.map(_.range(days), (day) => (
-                    <th key={day}>{DAYS[(startIndex + day) % 7]}</th>
-                ))}
-            </tr>
-            </thead>
-        );
+        return _.map(_.range(days), (day) => (
+            <div
+                className='header'
+                key={day}
+                style={{
+                    gridColumnStart: day + 2,
+                    gridColumnEnd: day + 3,
+                    gridRowStart: 1,
+                    gridRowEnd: 2
+                }}
+            >
+                { DAYS[(startIndex + day) % 7] }
+            </div>
+        ));
     });
 
-    getRowHeaders = defaultMemoize((start, end, interval, formatter) =>
-        _.map(_.range(start, end + 1, interval), (minutes) => formatter(minutes, start, end, interval))
+    getRowHeaders = defaultMemoize((start, end, interval, renderer) =>
+        _.map(_.range(start, end + 1, interval), (minutes) => (
+            <div
+                className='row-header'
+                key={minutes}
+                style={{
+                    gridColumnStart: 1,
+                    gridColumnEnd: 1,
+                    gridRowStart: this.gridify(minutes - start + 2),
+                    gridRowEnd: this.gridify(minutes - start + interval + 2)
+                }}
+            >
+                { renderer(minutes, start, end, interval) }
+            </div>
+        ))
     );
 
-    getIndexedEvents = defaultMemoize((events, numDays, weekStart) =>
-        _.map(_.range(numDays), (dayIndex) =>
-            _.filter(events, ({ days }) => _.some(days, (day) =>
-                getDayIndex(day) === ((dayIndex + getDayIndex(weekStart)) % 7)
-            ))
-        )
-    );
+    getEventElements = defaultMemoize((events, renderer, weekStart, numDays) => {
+        const startIdx = getDayIndex(weekStart);
 
-    getEventIndexMap = defaultMemoize((events) => _.reduce(
-        events,
-        (map, event, index) => map.set(event, index),
-        new Map()
-    ));
+        return _.flatMap(events, (event, index) =>
+            _.map(event.days, (day) => {
+                const dayPos = (7 + (getDayIndex(day) - startIdx)) % 7;
 
-    getEventGrid = defaultMemoize((start, end, days, indexedEvents, eventIndexMap) => {
-        const grid = new Array(days);
-        for (let day = 0; day < days; day++) {
-            const list = grid[day] = new Array(end - start + 1).fill(undefined);
-            _.forEach(indexedEvents[day] || [], (event) => {
-                for (let step = event.start; step <= event.end; step++) {
-                    list[step] = eventIndexMap.get(event);
-                }
-            });
-        }
-        return grid;
+                return dayPos < numDays && (
+                    <div
+                        className='event-container'
+                        key={`${index}-${day}`}
+                        style={{
+                            gridColumnStart: dayPos + 2,
+                            gridColumnEnd: dayPos + 3,
+                            gridRowStart: this.gridify(event.start + 2),
+                            gridRowEnd: this.gridify(event.end + 2)
+                        }}
+                    >
+                        {renderer(event, day)}
+                    </div>
+                );
+            })
+        );
     });
 
     render() {
@@ -129,56 +158,16 @@ class WeekCalendar extends PureComponent {
             start,
             end,
             weekStart,
-            rowHeaderFormatter,
+            rowHeaderRenderer,
+            eventRenderer,
             events,
         } = this.props;
 
-        const indexedEvents = this.getIndexedEvents(events, days, weekStart);
-        const eventMap = this.getEventIndexMap(events);
-        const rowHeaders = this.getRowHeaders(start, end, interval, rowHeaderFormatter);
-        const eventGrid = this.getEventGrid(start, end, days, indexedEvents, eventMap);
-
         return (
             <div className='week-calendar'>
-                <table>
-                    { this.getHeader(days, weekStart) }
-                    <tbody>
-                        { _.map(_.range(start, end + 1), (step) => {
-
-                            return (
-                                <tr key={step}>
-                                    { step % interval === 0 &&
-                                        <th
-                                            key={`row-header-${step / interval}`}
-                                            rowSpan={interval}
-                                        >
-                                            { rowHeaders[step / interval] }
-                                        </th>
-                                    }
-                                    { _.compact(_.map(_.range(days),
-                                        (day) => {
-                                        const key = (day + 1) * (step + 1);
-                                            if (eventGrid[day][step] === undefined) {
-                                                return <td key={key}></td>;
-                                            } else {
-                                                const event = events[eventGrid[day][step]];
-                                                return event.start === step ?
-                                                    <td
-                                                        rowSpan={event.end - event.start + 1}
-                                                        key={key}
-                                                        className='event'
-                                                    >
-                                                        {event.id}
-                                                    </td> :
-                                                    null;
-                                            }
-                                        }
-                                    )) }
-                                </tr>
-                            );
-                        }) }
-                    </tbody>
-                </table>
+                { this.getHeaders(days, weekStart) }
+                { this.getRowHeaders(start, end, interval, rowHeaderRenderer) }
+                { this.getEventElements(events, eventRenderer, weekStart, days) }
             </div>
         );
     }

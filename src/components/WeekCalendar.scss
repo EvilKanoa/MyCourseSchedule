@@ -1,7 +1,22 @@
-@import '_variables.scss';
-
 .week-calendar {
-  .event {
+  width: 80%;
+  height: 80%;
+
+  display: grid;
+  grid-template-columns: 60px;
+  grid-template-rows: 30px;
+  grid-auto-columns: auto;
+  grid-auto-rows: auto;
+
+  .header {
+    border: 2px solid blue;
+  }
+
+  .row-header {
+    border: 2px solid red;
+  }
+
+  .event-container {
     border: 2px solid black;
   }
 }
