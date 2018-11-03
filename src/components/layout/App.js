@@ -1,8 +1,8 @@
 import React, {PureComponent} from 'react';
 import {withRouter} from 'react-router-dom';
 
-import Topbar from 'components/Topbar';
-import Sidebar from 'components/Sidebar';
+import Topbar from 'components/layout/Topbar';
+import Sidebar from 'components/layout/Sidebar';
 
 import './App.scss';
 

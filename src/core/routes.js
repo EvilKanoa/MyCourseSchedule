@@ -10,7 +10,7 @@ import Dashboard from 'views/DashboardView';
 import Schedule from 'views/ScheduleView';
 import Courses from 'views/CoursesView';
 
-import App from 'components/App';
+import App from 'components/layout/App';
 
 const routes = (
     <BrowserRouter>

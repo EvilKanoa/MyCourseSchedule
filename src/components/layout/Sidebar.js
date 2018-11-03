@@ -8,22 +8,20 @@ import {
     FiBook as CoursesIcon
 } from 'react-icons/fi';
 
-import Footer from 'components/Footer';
+import Footer from 'components/layout/Footer';
 
 import './Sidebar.scss';
 
 @withRouter
 class SidebarButton extends PureComponent {
-    static get propTypes() {
-        return {
-            title: PropTypes.string.isRequired,
-            icon: PropTypes.oneOfType([
-                PropTypes.func,
-                PropTypes.element
-            ]).isRequired,
-            to: PropTypes.string,
-        };
-    }
+    static propTypes = {
+        title: PropTypes.string.isRequired,
+        icon: PropTypes.oneOfType([
+            PropTypes.func,
+            PropTypes.element
+        ]).isRequired,
+        to: PropTypes.string,
+    };
 
     render() {
         const Icon = this.props.icon;
