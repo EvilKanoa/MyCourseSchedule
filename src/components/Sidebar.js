@@ -8,6 +8,8 @@ import {
     FiBook as CoursesIcon
 } from 'react-icons/fi';
 
+import Footer from 'components/Footer';
+
 import './Sidebar.scss';
 
 @withRouter
@@ -27,7 +29,7 @@ class SidebarButton extends PureComponent {
         const Icon = this.props.icon;
 
         return (
-            <NavLink className='sidebar-button' to={this.props.to || ''}>
+            <NavLink className='sidebar-button sidebar-element' to={this.props.to || ''}>
                 <Icon
                     size={26}
                     color='black'
@@ -59,6 +61,8 @@ class Sidebar extends PureComponent {
                     icon={CoursesIcon}
                     to='/courses'
                 />
+
+                <Footer/>
             </div>
         );
     }

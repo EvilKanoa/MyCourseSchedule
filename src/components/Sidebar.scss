@@ -1,6 +1,8 @@
 @import '_variables.scss';
 
 #sidebar {
+  $animation: all 0.3s ease-out;
+
   display: flex;
   flex-flow: column nowrap;
 
@@ -8,7 +10,6 @@
   padding: 8px 0 0;
   overflow: hidden;
 
-  $animation: all 0.3s ease-out;
   box-shadow: inset 0 12px 12px -8px rgba($theme-color-dark, 0.6);
   transition: $animation;
   background: linear-gradient(
@@ -20,27 +21,35 @@
   &:hover {
     width: $sidebar-width-wide;
 
-    > .sidebar-button {
+    .sidebar-element {
       min-width: $sidebar-width-wide - 24px;
     }
+
+    > .footer {
+      opacity: 1;
+    }
+  }
+
+  .sidebar-element {
+    display: block;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 6px;
+    margin: 6px;
+    transition: $animation;
+    min-width: $sidebar-width - 24px;
   }
 
   > .sidebar-button {
     display: flex;
     flex-flow: row nowrap;
 
-    min-width: $sidebar-width - 24px;
-    overflow: hidden;
-    box-sizing: border-box;
     pointer-events: auto;
     cursor: pointer;
 
-    padding: 6px;
-    margin: 6px;
     height: 38px;
     color: $theme-color-dark;
     text-decoration: none;
-    transition: $animation;
     border-radius: 10px;
 
     &:hover {
@@ -59,5 +68,16 @@
     > h3 {
       flex: 1 1 auto;
     }
+  }
+
+  > .footer {
+    position: absolute;
+    bottom: 0;
+    height: 50px;
+    color: rgba($theme-color-dark, 0.75);
+    width: $sidebar-width-wide;
+    text-align: center;
+    opacity: 0;
+    transition: $animation;
   }
 }
