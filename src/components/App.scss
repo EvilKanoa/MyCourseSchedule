@@ -23,11 +23,10 @@
     flex-flow: row nowrap;
     justify-content: start;
 
-    > #sidebar {
-      flex: 0 0 $sidebar-width;
-    }
-
     > #view {
+      background: rgba($theme-color-primary, 0.1);
+      box-shadow: inset 4px 4px 10px 0 rgba($theme-color-dark, 0.6);
+      padding: 8px;
       flex: 1 1 100%;
     }
   }
