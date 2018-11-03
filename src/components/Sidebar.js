@@ -2,6 +2,12 @@ import React, {PureComponent} from 'react';
 import {withRouter, NavLink} from 'react-router-dom';
 import PropTypes from 'prop-types';
 
+import {
+    FiCalendar as CalenderIcon,
+    FiBox as DashboardIcon,
+    FiBook as CoursesIcon
+} from 'react-icons/fi';
+
 import './Sidebar.scss';
 
 @withRouter
@@ -9,21 +15,25 @@ class SidebarButton extends PureComponent {
     static get propTypes() {
         return {
             title: PropTypes.string.isRequired,
-            icon: PropTypes.string.isRequired,
+            icon: PropTypes.oneOfType([
+                PropTypes.func,
+                PropTypes.element
+            ]).isRequired,
             to: PropTypes.string,
         };
     }
 
     render() {
-        const {
-            title,
-            icon,
-            to
-        } = this.props;
+        const Icon = this.props.icon;
 
         return (
-            <NavLink className='sidebar-button' to={to || ''}>
-                <h3 className='title'>{title}</h3>
+            <NavLink className='sidebar-button' to={this.props.to || ''}>
+                <Icon
+                    size={26}
+                    color='black'
+                    className='icon'
+                />
+                <h3>{this.props.title}</h3>
             </NavLink>
         );
     }
@@ -36,17 +46,17 @@ class Sidebar extends PureComponent {
             <div id='sidebar'>
                 <SidebarButton
                     title='Dashboard'
-                    icon='dashboard'
+                    icon={DashboardIcon}
                     to='/dashboard'
                 />
                 <SidebarButton
                     title='Schedule'
-                    icon='calender'
+                    icon={CalenderIcon}
                     to='/schedule'
                 />
                 <SidebarButton
                     title='Courses'
-                    icon='courses'
+                    icon={CoursesIcon}
                     to='/courses'
                 />
             </div>
