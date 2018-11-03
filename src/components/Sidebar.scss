@@ -4,9 +4,7 @@
   display: flex;
   flex-flow: column nowrap;
 
-  flex: 0 0 $sidebar-width;
   width: $sidebar-width;
-  height: auto;
   padding: 8px 0 0;
   overflow: hidden;
 
@@ -21,7 +19,6 @@
 
   &:hover {
     width: $sidebar-width-wide;
-    flex: 0 0 $sidebar-width-wide;
 
     > .sidebar-button {
       min-width: $sidebar-width-wide - 24px;

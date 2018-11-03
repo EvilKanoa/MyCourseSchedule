@@ -9,36 +9,35 @@
   width: 100vw;
   max-width: 100vw;
 
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: start;
-
   > #topbar {
     z-index: 11;
-    flex: 0 0 $topbar-height;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 
-  > #content {
-    flex: 1 1 100%;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: start;
+  > #sidebar {
+    position: absolute;
+    top: $topbar-height;
+    left: 0;
+    box-sizing: border-box;
+    height: calc(100% - #{$topbar-height});
+    z-index: 10;
+    box-shadow: 0 0 10px 4px rgba($theme-color-dark, 0.6),
+                inset 0 12px 12px -8px rgba($theme-color-dark, 0.6);
+  }
 
-    > #sidebar {
-      z-index: 10;
-      box-shadow: 4px 0 10px 0 rgba($theme-color-dark, 0.6),
-                  inset 0 12px 12px -8px rgba($theme-color-dark, 0.6);
-    }
+  > #view {
+    position: absolute;
+    left: $sidebar-width;
+    top: $topbar-height;
+    z-index: 1;
+    box-sizing: border-box;
+    width: calc(100% - #{$sidebar-width});
+    height: calc(100% - #{$topbar-height});
 
-    > #view {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      left: $sidebar-width;
-      z-index: 1;
-      background: rgba($theme-color-primary, 0.1);
-      box-shadow: inset 0 4px 10px 0 rgba($theme-color-dark, 0.6);
-      padding: 8px;
-    }
+    background: rgba($theme-color-primary, 0.1);
+    box-shadow: inset 0 10px 10px -8px rgba($theme-color-dark, 0.6);
+    padding: 8px;
   }
 }

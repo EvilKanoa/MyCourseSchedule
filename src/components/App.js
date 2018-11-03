@@ -12,13 +12,10 @@ class App extends PureComponent {
         return (
             <div id='app'>
                 <Topbar/>
+                <Sidebar/>
 
-                <div id='content'>
-                    <Sidebar/>
-
-                    <div id='view'>
-                        { this.props.children }
-                    </div>
+                <div id='view'>
+                    { this.props.children }
                 </div>
             </div>
         );
