@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import cx from 'classnames';
 import {defaultMemoize} from 'reselect';
 
 import './WeekCalendar.scss';
@@ -35,15 +36,17 @@ const floor = (x) => ~~x;
 
 class WeekCalendar extends PureComponent {
     static rowHeaderRenderer = (minutes) => (
-        <span>
-            { _.padStart(Math.floor(minutes / 60), 2, '0') }:{ _.padStart(minutes % 60, 2, '0') }
-        </span>
+        <p className='center-content'>
+            { _.padStart(floor(minutes / 60) - (minutes / 60 < 13 ? 0 : 12), 2, '0') }
+            :{ _.padStart(minutes % 60, 2, '0') }
+            { minutes / 60 < 12 ? 'am' : 'pm' }
+        </p>
     );
 
     static eventRenderer = (event) => (
-        <span>
+        <div>
             { event.content }
-        </span>
+        </div>
     );
 
     static propTypes = {
@@ -89,41 +92,81 @@ class WeekCalendar extends PureComponent {
         precision: 5,
     };
 
-    gridify = (x) => floor(x / this.props.precision)
+    gridify = (y) => floor(y / this.props.precision);
 
-    getHeaders = defaultMemoize((days, weekStart) => {
+    getHeaders = defaultMemoize((days, weekStart, start, end, interval) => {
         const startIndex = getDayIndex(weekStart);
-        return _.map(_.range(days), (day) => (
-            <div
-                className='header'
-                key={day}
-                style={{
-                    gridColumnStart: day + 2,
-                    gridColumnEnd: day + 3,
-                    gridRowStart: 1,
-                    gridRowEnd: 2
-                }}
-            >
-                { DAYS[(startIndex + day) % 7] }
-            </div>
-        ));
+        return _.map(_.range(days), (day) => [
+            (
+                <div
+                    className={cx('header', {
+                        first: day === 0,
+                        last: day === (days - 1)
+                    })}
+                    key={day}
+                    style={{
+                        gridColumnStart: day + 2,
+                        gridColumnEnd: day + 3,
+                        gridRowStart: 1,
+                        gridRowEnd: 2
+                    }}
+                >
+                    <p className='center-content'>
+                        { DAYS[(startIndex + day) % 7] }
+                    </p>
+                </div>
+            ), (
+                <div
+                    className={cx('grid-line-y', {
+                        first: day === 0,
+                        last: day === (days - 1)
+                    })}
+                    key={`${day}-grid-line-y`}
+                    style={{
+                        gridColumnStart: day + 2,
+                        gridColumnEnd: day + 3,
+                        gridRowStart: 2,
+                        gridRowEnd: this.gridify(end - start + interval)
+                    }}
+                ></div>
+            )
+        ]);
     });
 
-    getRowHeaders = defaultMemoize((start, end, interval, renderer) =>
-        _.map(_.range(start, end + 1, interval), (minutes) => (
-            <div
-                className='row-header'
-                key={minutes}
-                style={{
-                    gridColumnStart: 1,
-                    gridColumnEnd: 1,
-                    gridRowStart: this.gridify(minutes - start + 2),
-                    gridRowEnd: this.gridify(minutes - start + interval + 2)
-                }}
-            >
-                { renderer(minutes, start, end, interval) }
-            </div>
-        ))
+    getRowHeaders = defaultMemoize((start, end, interval, numDays, renderer) =>
+        _.map(_.range(start, end + 1, interval), (minutes) => [
+            (
+                <div
+                    className={cx('row-header', {
+                        first: minutes === start,
+                        last: minutes === end
+                    })}
+                    key={minutes}
+                    style={{
+                        gridColumnStart: 1,
+                        gridColumnEnd: 1,
+                        gridRowStart: this.gridify(minutes - start + 2),
+                        gridRowEnd: this.gridify(minutes - start + interval + 2)
+                    }}
+                >
+                    { renderer(minutes, start, end, interval) }
+                </div>
+            ), (
+                <div
+                    className={cx('grid-line-x', {
+                        first: minutes === start,
+                        last: minutes === end
+                    })}
+                    key={`${minutes}-grid-line-x`}
+                    style={{
+                        gridColumnStart: 2,
+                        gridColumnEnd: numDays + 2,
+                        gridRowStart: this.gridify(minutes - start + 2),
+                        gridRowEnd: this.gridify(minutes - start + interval + 2)
+                    }}
+                ></div>
+            )
+        ])
     );
 
     getEventElements = defaultMemoize((events, renderer, weekStart, numDays) => {
@@ -165,8 +208,26 @@ class WeekCalendar extends PureComponent {
 
         return (
             <div className='week-calendar'>
-                { this.getHeaders(days, weekStart) }
-                { this.getRowHeaders(start, end, interval, rowHeaderRenderer) }
+                <div
+                    className='header-row'
+                    style={{
+                        gridColumnStart: 1,
+                        gridColumnEnd: days + 2,
+                        gridRowStart: 1,
+                        gridRowEnd: 2
+                    }}
+                ></div>
+                { this.getHeaders(days, weekStart, start, end, interval) }
+                <div
+                    className='row-header-row'
+                    style={{
+                        gridColumnStart: 1,
+                        gridColumnEnd: 2,
+                        gridRowStart: 1,
+                        gridRowEnd: this.gridify(end - start + interval)
+                    }}
+                ></div>
+                { this.getRowHeaders(start, end, interval, days, rowHeaderRenderer) }
                 { this.getEventElements(events, eventRenderer, weekStart, days) }
             </div>
         );

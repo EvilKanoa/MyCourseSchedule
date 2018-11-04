@@ -1,22 +1,80 @@
+@import '_variables.scss';
+
 .week-calendar {
   width: 80%;
   height: 80%;
 
   display: grid;
-  grid-template-columns: 60px;
+  grid-template-columns: 70px;
   grid-template-rows: 30px;
   grid-auto-columns: auto;
   grid-auto-rows: auto;
 
-  .header {
-    border: 2px solid blue;
+  //background: radial-gradient(grey, purple, red, pink, blue, teal, black, orange, #E34234);
+  border: 1px solid $theme-color-dark;
+
+  * > .center-content {
+    align-self: center;
+    margin: 0 auto;
   }
 
-  .row-header {
-    border: 2px solid red;
+  > .header {
+    display: flex;
+    border-left: 1px solid $theme-color-dark;
+
+    * {
+      font-weight: bold;
+    }
+
+    &.first {
+      border-left: 0;
+    }
   }
 
-  .event-container {
-    border: 2px solid black;
+  > .row-header {
+    display: flex;
+    border-top: 1px solid rgba($theme-color-dark, 0.25);
+
+    * {
+      font-size: 14px;
+    }
+
+    &.first {
+      border-top: 0;
+    }
+  }
+
+  > .event-container {
+    border: 1px solid black;
+    margin-right: -1px;
+    margin-bottom: -1px;
+    background: $theme-color-bright;
+  }
+
+  > .grid-line-x {
+    border-top: 1px solid rgba($theme-color-dark, 0.25);
+    z-index: -1;
+
+    &.first {
+      border-top: 0;
+    }
+  }
+
+  > .grid-line-y {
+    border-left: 1px solid rgba($theme-color-dark, 0.25);
+    z-index: -1;
+
+    &.first {
+      border-left: 0;
+    }
+  }
+
+  > .header-row {
+    background: rgba($theme-color-dark, 0.25);
+    border-bottom: 1px double $theme-color-dark;
+  }
+
+  > .row-header-row {
+    border-right: 1px solid $theme-color-dark;
   }
 }
