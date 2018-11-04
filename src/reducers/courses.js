@@ -1,10 +1,11 @@
 import {createSelector} from 'reselect';
-import {errorHandler, jsonHandler} from 'util/fetchUtils';
+import {errorHandler, jsonHandler, corsEscape} from 'util/fetchUtils';
 
 const initialState = {
     courses: [],
     loading: false,
     error: '',
+    term: 'W19',
 };
 
 // base selectors
@@ -12,6 +13,7 @@ export const getState = (state) => state.courses;
 export const getCourses = (state) => getState(state).courses;
 export const isLoading = (state) => getState(state).loading;
 export const getError = (state) => getState(state).error;
+export const getTerm = (state) => getState(state).term;
 export const isFailed = (state) => !!getError(state);
 
 // computed selectors
