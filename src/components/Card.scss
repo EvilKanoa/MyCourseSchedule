@@ -1,0 +1,13 @@
+@import '_variables.scss';
+
+.card {
+  display: block;
+  padding: 10px 20px;
+  background: linear-gradient(
+                  to bottom,
+                  rgba($theme-color-primary, 0.2),
+                  rgba($theme-color-accent, 0.2)
+  );
+  box-shadow: 1px 1px 12px 0 rgba($theme-color-dark, 0.6);
+  border-radius: 8px;
+}

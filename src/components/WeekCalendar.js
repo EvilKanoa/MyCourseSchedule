@@ -73,28 +73,13 @@ class WeekCalendar extends PureComponent {
         end: 24 * 60,
         rowHeaderRenderer: WeekCalendar.rowHeaderRenderer,
         eventRenderer: WeekCalendar.eventRenderer,
-        events: [{
-            days: ['monday', 'TUESDAYS'],
-            start: 30,
-            end: 60,
-            content: 'first'
-        },{
-            days: ['monday', 'wednesdays', 'friday'],
-            start: 135,
-            end: 200,
-            content: 'second'
-        },{
-            days: ['SUNday', 'SAturdays', 'thursday'],
-            start: 200,
-            end: 255,
-            content: 'third'
-        }],
+        events: [],
         precision: 5,
     };
 
-    gridify = (y) => floor(y / this.props.precision);
+    gridify = (y, precision = this.props.precision) => floor(y / precision);
 
-    getHeaders = defaultMemoize((days, weekStart, start, end, interval) => {
+    getHeaders = defaultMemoize((days, weekStart, start, end, interval, precision) => {
         const startIndex = getDayIndex(weekStart);
         return _.map(_.range(days), (day) => [
             (
@@ -126,14 +111,14 @@ class WeekCalendar extends PureComponent {
                         gridColumnStart: day + 2,
                         gridColumnEnd: day + 3,
                         gridRowStart: 2,
-                        gridRowEnd: this.gridify(end - start + interval)
+                        gridRowEnd: this.gridify(end - start + interval, precision) + 2
                     }}
                 ></div>
             )
         ]);
     });
 
-    getRowHeaders = defaultMemoize((start, end, interval, numDays, renderer) =>
+    getRowHeaders = defaultMemoize((start, end, interval, numDays, renderer, precision) =>
         _.map(_.range(start, end + 1, interval), (minutes) => [
             (
                 <div
@@ -144,9 +129,9 @@ class WeekCalendar extends PureComponent {
                     key={minutes}
                     style={{
                         gridColumnStart: 1,
-                        gridColumnEnd: 1,
-                        gridRowStart: this.gridify(minutes - start + 2),
-                        gridRowEnd: this.gridify(minutes - start + interval + 2)
+                        gridColumnEnd: 2,
+                        gridRowStart: this.gridify(minutes - start, precision) + 2,
+                        gridRowEnd: this.gridify(minutes - start + interval, precision) + 2
                     }}
                 >
                     { renderer(minutes, start, end, interval) }
@@ -161,15 +146,15 @@ class WeekCalendar extends PureComponent {
                     style={{
                         gridColumnStart: 2,
                         gridColumnEnd: numDays + 2,
-                        gridRowStart: this.gridify(minutes - start + 2),
-                        gridRowEnd: this.gridify(minutes - start + interval + 2)
+                        gridRowStart: this.gridify(minutes - start, precision) + 2,
+                        gridRowEnd: this.gridify(minutes - start + interval, precision) + 2
                     }}
                 ></div>
             )
         ])
     );
 
-    getEventElements = defaultMemoize((events, renderer, weekStart, numDays) => {
+    getEventElements = defaultMemoize((events, renderer, weekStart, numDays, precision) => {
         const startIdx = getDayIndex(weekStart);
 
         return _.flatMap(events, (event, index) =>
@@ -183,8 +168,8 @@ class WeekCalendar extends PureComponent {
                         style={{
                             gridColumnStart: dayPos + 2,
                             gridColumnEnd: dayPos + 3,
-                            gridRowStart: this.gridify(event.start + 2),
-                            gridRowEnd: this.gridify(event.end + 2)
+                            gridRowStart: this.gridify(event.start, precision) + 2,
+                            gridRowEnd: this.gridify(event.end, precision) + 2
                         }}
                     >
                         {renderer(event, day)}
@@ -204,10 +189,13 @@ class WeekCalendar extends PureComponent {
             rowHeaderRenderer,
             eventRenderer,
             events,
+            className,
+            precision,
+            ...rest
         } = this.props;
 
         return (
-            <div className='week-calendar'>
+            <div {...rest} className={cx('week-calendar', className)}>
                 <div
                     className='header-row'
                     style={{
@@ -217,18 +205,18 @@ class WeekCalendar extends PureComponent {
                         gridRowEnd: 2
                     }}
                 ></div>
-                { this.getHeaders(days, weekStart, start, end, interval) }
+                { this.getHeaders(days, weekStart, start, end, interval, precision) }
                 <div
                     className='row-header-row'
                     style={{
                         gridColumnStart: 1,
                         gridColumnEnd: 2,
                         gridRowStart: 1,
-                        gridRowEnd: this.gridify(end - start + interval)
+                        gridRowEnd: this.gridify(end - start + interval) + 2
                     }}
                 ></div>
-                { this.getRowHeaders(start, end, interval, days, rowHeaderRenderer) }
-                { this.getEventElements(events, eventRenderer, weekStart, days) }
+                { this.getRowHeaders(start, end, interval, days, rowHeaderRenderer, precision) }
+                { this.getEventElements(events, eventRenderer, weekStart, days, precision) }
             </div>
         );
     }

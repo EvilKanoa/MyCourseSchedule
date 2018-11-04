@@ -1,5 +1,11 @@
 import {combineReducers} from 'redux';
 
-const rootReducer = combineReducers({});
+import courses from 'reducers/courses';
+import schedule from 'reducers/schedule';
+
+const rootReducer = combineReducers({
+    courses,
+    schedule,
+});
 
 export default rootReducer;
