@@ -1,10 +1,11 @@
+const webpack = require('webpack');
 const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-module.exports = {
+module.exports = (env = {}) => ({
     entry: {
         app: './src/index.js'
     },
@@ -49,6 +50,10 @@ module.exports = {
         ]
     },
     plugins: [
+        new webpack.DefinePlugin(Object.keys(env).reduce((acc, key) => {
+            acc[`process.env.${key}`] = JSON.stringify(env[key]);
+            return acc;
+        }, {})),
         new CleanWebpackPlugin(['dist']),
         new MiniCssExtractPlugin({
             filename: '[name].[hash].css',
@@ -62,4 +67,4 @@ module.exports = {
             favicon: 'assets/favicon.ico'
         }),
     ],
-};
+});

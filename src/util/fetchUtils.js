@@ -1,5 +1,6 @@
-export const corsEscapeAddress = 'https://cors-escape.herokuapp.com/';
-export const corsEscape = (url) => `${corsEscapeAddress}${url}`;
+import _ from 'lodash';
+
+export const corsEscape = (url) => `${process.env.CORS_PROXY}${url}`;
 
 export const errorHandler = (response) =>
     response.ok ?
@@ -8,3 +9,8 @@ export const errorHandler = (response) =>
 
 export const jsonHandler = (response) => response.json();
 
+export const urlencode = (data = {}) => _.join(
+    _.map(_.keys(data), (key) =>
+        `${_.escape(key)}=${_.escape(data[key])}`
+    ), '&'
+);

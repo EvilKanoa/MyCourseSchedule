@@ -7,8 +7,8 @@
   "scripts": {
     "test": "echo \"I'm lazy and need to add tests...\" && exit 0",
     "dev": "npm start",
-    "start": "NODE_ENV=development webpack-dev-server --open --config webpack.dev.js --colors --progress --no-info",
-    "build": "webpack --config webpack.prod.js",
+    "start": "NODE_ENV=development webpack-dev-server --env.CORS_PROXY=http://127.0.0.1:8080/ --open --config webpack.dev.js --colors --progress --no-info",
+    "build": "NODE_ENV=production webpack --env.CORS_PROXY=https://my-course-schedule-proxy.herokuapp.com/ --config webpack.prod.js",
     "prod": "NODE_ENV=production npm run build && http-server \"./dist\" -p ${PORT:=80} --utc --push-state"
   },
   "engines": {
