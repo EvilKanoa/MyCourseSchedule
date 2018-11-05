@@ -14,3 +14,10 @@ export const urlencode = (data = {}) => _.join(
         `${_.escape(key)}=${_.escape(data[key])}`
     ), '&'
 );
+
+export const getCookie = (cookies, key) => (
+    _.find(
+        cookies.split(';'),
+        (cookie) => cookie.trim().split('=', 2)[0].toLowerCase() === key.trim().toLowerCase()
+    ).trim().split('=', 2)[1]
+);

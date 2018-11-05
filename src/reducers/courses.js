@@ -1,6 +1,6 @@
 import {createSelector} from 'reselect';
 import _ from 'lodash';
-import {errorHandler, corsEscape, urlencode} from 'util/fetchUtils';
+import {errorHandler, corsEscape, urlencode, getCookie} from 'util/fetchUtils';
 
 const webadvisor = (token = '') =>
     `https://webadvisor.uoguelph.ca/WebAdvisor/WebAdvisor?CONSTITUENCY=WBST&type=P&pid=ST-WESTS12A&TOKENIDX=${token}`;
@@ -71,7 +71,7 @@ export const fetchCourses = () => async (dispatch, getState) => {
     try {
         let res = await fetch(corsEscape(webadvisor())).then(errorHandler);
         let cookies = res.headers.get('x-forwarded-cookies');
-        const token = JSON.parse(cookies)['LASTTOKEN'] || '';
+        const token = getCookie(cookies, 'LASTTOKEN');
         dispatch(setWebadvisorToken(token));
         if (!token) {
             throw Error('Failed to retrieve token from webadvisor');
@@ -107,21 +107,9 @@ export const fetchCourses = () => async (dispatch, getState) => {
                 credentials: 'omit',
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
-                    'x-append-cookies': cookies,
-                    'x-ignore-redirects': 'true'
+                    'x-append-cookies': cookies
                 },
                 body: urlencode(postData)
-            }
-        );
-        cookies = res.headers.get('x-forwarded-cookies');
-
-        res = await fetch(
-            corsEscape(`https://webadvisor.uoguelph.ca/WebAdvisor/WebAdvisor?TOKENIDX=${token}&SS=2&APP=ST&CONSTITUENCY=WBST`),
-            {
-                credentials: 'omit',
-                headers: {
-                    'x-append-cookies': cookies
-                }
             }
         ).then(errorHandler);
 
