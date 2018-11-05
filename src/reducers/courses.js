@@ -2,7 +2,8 @@ import {createSelector} from 'reselect';
 import _ from 'lodash';
 import {errorHandler, corsEscape, urlencode, getCookie} from 'util/fetchUtils';
 
-const webadvisor = (token = '') =>
+const webadvisor = (token = '', post = false) => post ?
+    `https://webadvisor.uoguelph.ca/WebAdvisor/WebAdvisor?CONSTITUENCY=WBST&SS=1&APP=ST&TOKENIDX=${token}&` :
     `https://webadvisor.uoguelph.ca/WebAdvisor/WebAdvisor?CONSTITUENCY=WBST&type=P&pid=ST-WESTS12A&TOKENIDX=${token}`;
 
 const initialState = {
@@ -101,7 +102,7 @@ export const fetchCourses = () => async (dispatch, getState) => {
             'VAR9': '', 'SUBMIT_OPTIONS': ''
         };
         res = await fetch(
-            corsEscape(`https://webadvisor.uoguelph.ca/WebAdvisor/WebAdvisor?TOKENIDX=${token}&SS=1&APP=ST&CONSTITUENCY=WBST`),
+            corsEscape(webadvisor(token, true)),
             {
                 method: 'post',
                 credentials: 'omit',
