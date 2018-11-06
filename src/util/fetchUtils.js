@@ -7,6 +7,11 @@ export const errorHandler = (response) =>
 
 export const jsonHandler = (response) => response.json();
 
+export const wapiHandler = (json) =>
+    (json.status && (json.status < 200 || json.status > 299)) ?
+        Promise.reject(Error(`${json.status}: ${json.message}`)) :
+        Prmoise.resolve(json);
+
 export const urlencode = (data = {}) => _.join(
     _.map(_.keys(data), (key) =>
         `${_.escape(key)}=${_.escape(data[key])}`

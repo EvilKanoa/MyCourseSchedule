@@ -13,8 +13,3 @@ To create a production ready build, run `npm run build` and the `dist` folder wi
 
 You can also run the server directly using `spa-http-server` by running `npm run prod` which will run a production ready build on an HTTP server on port 80.
 To specify a different port, use the `PORT` environment variable. E.g., `PORT=8080 npm run prod`.
-
-
-## cors-anywhere proxy
-When requesting course data from the client, a CORS proxy is required. This project assumes you use the `cors-anywhere` project from Rob--W available at https://github.com/Rob--W/cors-anywhere.
-To facilitate requests, cookies must be enabled on the proxy. The `cors-anywhere` proxy disabled this by default, you can find a fork which allows this at https://github.com/EvilKanoa/cors-anywhere.

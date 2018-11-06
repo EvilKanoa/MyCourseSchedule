@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import _ from 'lodash';
 
 import {
     getCourses,
@@ -9,7 +10,10 @@ import {
     fetchCourses
 } from 'reducers/courses';
 
+import Course from 'components/Course';
 import Card from 'components/Card';
+
+import './CoursesView.scss';
 
 @connect(
     (state) => ({
@@ -29,25 +33,24 @@ class CoursesView extends PureComponent {
     render() {
         return (
             <div id='view-courses'>
+                <h3>
+                    {
+                        this.props.loading ?
+                            'Loading' :
+                            (this.props.error ?
+                                    'Failed' :
+                                    'Succeeded'
+                            )
+                    }
+                    :
+                    { this.props.error }
+                </h3>
                 <h1> Courses </h1>
-                    <Card>
-                        <h3>
-                            {
-                                this.props.loading ?
-                                    'Loading' :
-                                    (this.props.error ?
-                                        'Failed' :
-                                        'Succeeded'
-                                    )
-                            }
-                        </h3>
-                        <pre>
-                            {this.props.error || '' }
-                        </pre>
-                        <pre>
-                            { JSON.stringify(this.props.courses, null, 4) }
-                        </pre>
+                { _.map([..._.take(this.props.courses, 20), _.find(this.props.courses, { code: 'CIS*1500'}) ], (course) => (
+                    <Card className='course-card' key={course.code}>
+                        <Course data={course}/>
                     </Card>
+                )) }
             </div>
         )
     }

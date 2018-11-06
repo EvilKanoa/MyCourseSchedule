@@ -1,0 +1,19 @@
+@import '_variables.scss';
+
+#view-courses {
+  display: flex;
+  flex-flow: column nowrap;
+
+  width: 90%;
+  max-width: 950px;
+  min-width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+
+  .course-card {
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+  }
+}

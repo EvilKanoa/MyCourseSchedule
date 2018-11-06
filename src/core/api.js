@@ -1,4 +1,4 @@
-import {errorHandler, jsonHandler} from 'util/fetchUtils';
+import {errorHandler, jsonHandler, wapiHandler} from 'util/fetchUtils';
 
 class API {
     constructor(url) {
@@ -9,7 +9,8 @@ class API {
 
     getCourses = async (term) => await fetch(this.url(`courses/${term}`))
         .then(errorHandler)
-        .then(jsonHandler);
+        .then(jsonHandler)
+        .then(wapiHandler);
 }
 
 const instance = new API(process.env.WEBADVISOR_API);
