@@ -1,9 +1,10 @@
 import {createSelector} from 'reselect';
 import _ from 'lodash';
 import API from 'core/api';
+import Storage from 'core/storage';
 
 const initialState = {
-    courses: [],
+    courses: Storage.getCourses() || [],
     loading: false,
     error: '',
     term: 'W19',
@@ -27,10 +28,13 @@ const beginCourseFetch = () => ({
     type: 'BEGIN_COURSE_FETCH'
 });
 
-const courseFetchSucceeded = (courses = []) => ({
-    type: 'COURSE_FETCH_SUCCEEDED',
-    data: courses
-});
+const courseFetchSucceeded = (courses = []) => (dispatch) => {
+    if (courses && courses.length) Storage.updateCourses(courses)
+    dispatch({
+        type: 'COURSE_FETCH_SUCCEEDED',
+        data: courses
+    });
+};
 
 const courseFetchFailed = (err) => ({
     type: 'COURSE_FETCH_FAILED',
@@ -65,7 +69,6 @@ export default (state = initialState, { type, ...action }) => {
 
         case 'COURSE_FETCH_FAILED': return {
             ...state,
-            courses: [],
             loading: false,
             error: action.err
         };

@@ -30,15 +30,24 @@ class CoursesView extends PureComponent {
         return (
             <div id='view-courses'>
                 <h1> Courses </h1>
-                {this.props.loading ?
-                    <h2> Loading... </h2> :
                     <Card>
-                        {this.props.error ? 'Failed' : 'Succeeded'}
+                        <h3>
+                            {
+                                this.props.loading ?
+                                    'Loading' :
+                                    (this.props.error ?
+                                        'Failed' :
+                                        'Succeeded'
+                                    )
+                            }
+                        </h3>
                         <pre>
-                            {this.props.error || JSON.stringify(this.props.courses, null, 4)}
+                            {this.props.error || '' }
+                        </pre>
+                        <pre>
+                            { JSON.stringify(this.props.courses, null, 4) }
                         </pre>
                     </Card>
-                }
             </div>
         )
     }
