@@ -5,7 +5,6 @@ import {errorHandler, jsonHandler} from 'util/fetchUtils';
 const initialState = {
     courses: [],
     loading: false,
-    parsing: true,
     error: '',
     term: 'W19',
 };
