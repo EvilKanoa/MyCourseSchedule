@@ -1,6 +1,6 @@
 import {createSelector} from 'reselect';
 import _ from 'lodash';
-import {errorHandler, jsonHandler} from 'util/fetchUtils';
+import API from 'core/api';
 
 const initialState = {
     courses: [],
@@ -39,16 +39,12 @@ const courseFetchFailed = (err) => ({
 
 export const fetchCourses = () => async (dispatch, getState) => {
     dispatch(beginCourseFetch());
-
-    try {
-        const data = await fetch(`${process.env.WEBADVISOR_API}courses/${getTerm(getState())}`)
-            .then(errorHandler)
-            .then(jsonHandler);
-        dispatch(courseFetchSucceeded(data));
-        return data;
-    } catch (err) {
-        dispatch(courseFetchFailed(err.message));
-    }
+    return API.getCourses(getTerm(getState()))
+        .then((data) => {
+            dispatch(courseFetchSucceeded(data));
+        }).catch((err) => {
+            dispatch(courseFetchFailed(err.message || err));
+        });
 };
 
 // reducer
