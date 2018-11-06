@@ -1,7 +1,5 @@
 import _ from 'lodash';
 
-export const corsEscape = (url) => `${process.env.CORS_PROXY}${url}`;
-
 export const errorHandler = (response) =>
     response.ok ?
         Promise.resolve(response) :
