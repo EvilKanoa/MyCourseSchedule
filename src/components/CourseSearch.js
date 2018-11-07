@@ -80,13 +80,18 @@ class CourseSearch extends PureComponent {
         }
     )), 'weight'));
 
-    getSifter = defaultMemoize((courses) => new Sifter(courses));
+    getSifter = defaultMemoize((courses) => new Sifter(
+        _.map(courses, (course) => ({
+            ...course,
+            title: `${course.code} ${course.name}`
+        }))
+    ));
 
     searchResults = defaultMemoize((search = '', courses = [], sort) => {
         const results = this.getSifter(courses).search(
             search,
             {
-                fields: ['code', 'name', 'credits', 'location', 'description'],
+                fields: ['title', 'credits', 'location', 'description'],
                 sort: this.getSort(sort),
                 filter: true,
                 conjunction: 'or',
