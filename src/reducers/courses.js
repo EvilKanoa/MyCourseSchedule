@@ -51,7 +51,7 @@ export const fetchCourses = () => async (dispatch, getState) => {
                 return Promise.reject('No data received from server');
             }
         }).catch((err) => {
-            console.error(err.message || err);
+            console.error(err);
             dispatch(courseFetchFailed(err.message || err));
         });
 };

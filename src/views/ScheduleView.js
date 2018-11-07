@@ -76,8 +76,6 @@ class ScheduleView extends PureComponent {
         const { courses, selectedCourses, schedules } = this.props;
         const { searched } = this.state;
 
-        console.log(schedules);
-
         return (
             <div id='view-schedule'>
                 <div className='top'>

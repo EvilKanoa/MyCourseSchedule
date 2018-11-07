@@ -9,7 +9,7 @@ export const jsonHandler = (response) => response.json();
 
 export const wapiHandler = (json) =>
     (json.status && (json.status < 200 || json.status > 299)) ?
-        Promise.reject(Error(`${json.status}: ${json.message}`)) :
+        Promise.reject(Error(`${json.status}: ${json.message} (${JSON.stringify(json)})`)) :
         Promise.resolve(json);
 
 export const urlencode = (data = {}) => _.join(
