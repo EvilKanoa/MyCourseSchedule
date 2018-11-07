@@ -46,11 +46,13 @@ class CoursesView extends PureComponent {
                     { this.props.error }
                 </h3>
                 <h1> Courses </h1>
-                { _.map([..._.take(this.props.courses, 20), _.find(this.props.courses, { code: 'CIS*1500'}) ], (course) => (
-                    <Card className='course-card' key={course.code}>
-                        <Course data={course}/>
-                    </Card>
-                )) }
+                { _.map([..._.take(this.props.courses, 20), _.find(this.props.courses, { code: 'CIS*1500'}) ], (course) =>
+                    course && course.code && (
+                        <Card className='course-card' key={course.code}>
+                            <Course data={course}/>
+                        </Card>
+                    )
+                ) }
             </div>
         )
     }

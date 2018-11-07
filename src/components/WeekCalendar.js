@@ -44,7 +44,7 @@ class WeekCalendar extends PureComponent {
     );
 
     static eventRenderer = (event) => (
-        <div>
+        <div className='default-calendar-event'>
             { event.content }
         </div>
     );
@@ -61,6 +61,7 @@ class WeekCalendar extends PureComponent {
             days: PropTypes.arrayOf(dayTypeValidator).isRequired,
             start: PropTypes.number.isRequired,
             end: PropTypes.number.isRequired,
+            content: PropTypes.any
         })),
         precision: PropTypes.number,
     };
@@ -154,7 +155,7 @@ class WeekCalendar extends PureComponent {
         ])
     );
 
-    getEventElements = defaultMemoize((events, renderer, weekStart, numDays, precision) => {
+    getEventElements = defaultMemoize((start, events, renderer, weekStart, numDays, precision) => {
         const startIdx = getDayIndex(weekStart);
 
         return _.flatMap(events, (event, index) =>
@@ -168,8 +169,8 @@ class WeekCalendar extends PureComponent {
                         style={{
                             gridColumnStart: dayPos + 2,
                             gridColumnEnd: dayPos + 3,
-                            gridRowStart: this.gridify(event.start, precision) + 2,
-                            gridRowEnd: this.gridify(event.end, precision) + 2
+                            gridRowStart: this.gridify(event.start - start, precision),
+                            gridRowEnd: this.gridify(event.end - start, precision) + 2
                         }}
                     >
                         {renderer(event, day)}
@@ -216,7 +217,7 @@ class WeekCalendar extends PureComponent {
                     }}
                 ></div>
                 { this.getRowHeaders(start, end, interval, days, rowHeaderRenderer, precision) }
-                { this.getEventElements(events, eventRenderer, weekStart, days, precision) }
+                { this.getEventElements(start, events, eventRenderer, weekStart, days, precision) }
             </div>
         );
     }

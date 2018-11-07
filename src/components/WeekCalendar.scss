@@ -71,6 +71,7 @@
   > .header-row {
     background: rgba($theme-color-dark, 0.25);
     border-bottom: 1px double $theme-color-dark;
+    margin-right: -1px;
   }
 
   > .row-header-row {

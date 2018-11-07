@@ -8,6 +8,7 @@ import {
     FiMinimize2 as CollapseIcon
 } from 'react-icons/fi';
 import Card from 'components/Card';
+import WeekCalendar from 'components/WeekCalendar';
 
 import './Course.scss';
 
@@ -44,6 +45,7 @@ const ORDERED_DAY_LABELS = [
 
 class Course extends PureComponent {
     static propTypes = {
+        calendar: PropTypes.bool,
         data: PropTypes.shape({
             code: PropTypes.string.isRequired,
             name: PropTypes.string,
@@ -69,6 +71,10 @@ class Course extends PureComponent {
         }).isRequired,
     };
 
+    static defaultProps = {
+        calendar: false,
+    };
+
     constructor() {
         super();
 
@@ -86,6 +92,18 @@ class Course extends PureComponent {
             });
         }
     };
+
+    computeEvents = (section) => _.map(
+        _.filter(section.meetings, ({ type }) => type !== 'EXAM'),
+        ({ type, day, start, end, location }) => ({
+            days: [day],
+            start: parseInt(start.split(':')[0] * 60, 10) + parseInt(start.split(':')[1], 10),
+            end: parseInt(end.split(':')[0] * 60, 10) + parseInt(end.split(':')[1], 10),
+            content: ORDERED_MEETING_TYPES.includes(type) ?
+                ORDERED_MEETING_LABELS[ORDERED_MEETING_TYPES.indexOf(type)] :
+                type
+        })
+    );
 
     getSectionTypes = (section) => {
         const counts = _.countBy(section.meetings, 'type');
@@ -135,7 +153,7 @@ class Course extends PureComponent {
 
 
     render() {
-        const { data } = this.props;
+        const { data, calendar } = this.props;
         const isOpened = (section) => this.state.openedSections.includes(section.sectionId);
 
         return (
@@ -192,6 +210,17 @@ class Course extends PureComponent {
                             { isOpened(section) &&
                                 <div className='section-body'>
                                     { this.getMeetingElements(section) }
+                                    { calendar &&
+                                        <WeekCalendar
+                                            className='section-calendar'
+                                            days={5}
+                                            interval={60}
+                                            start={8 * 60}
+                                            end={22 * 60}
+                                            weekStart={'monday'}
+                                            events={this.computeEvents(section)}
+                                        />
+                                    }
                                 </div>
                             }
                         </div>

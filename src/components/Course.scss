@@ -83,11 +83,12 @@
     }
 
     .section-body {
+      display: flex;
+      flex-flow: row wrap;
+
       border-top: 1px solid rgba($theme-color-dark, 0.5);
       background: rgba($theme-color-accent, 0.2);
       padding: 5px;
-      display: flex;
-      flex-flow: row wrap;
 
       .section-meeting {
         display: flex;
@@ -100,6 +101,16 @@
 
         > * {
           flex: 1 1 auto;
+        }
+      }
+
+      .section-calendar {
+        height: 600px;
+        margin-top: 30px;
+
+        .default-calendar-event {
+          display: flex;
+          justify-content: center;
         }
       }
     }
