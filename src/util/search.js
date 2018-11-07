@@ -53,21 +53,23 @@ class Search {
         const weights = Array(this.haystack.length).fill(0);
         const safeSort = [...options.sort].filter((opt) => opt.field && opt.direction && opt.weight);
         safeSort.forEach((sort) => {
-            const sorted = [...this.haystack];
-            sorted.sort((a, b) => {
-                const x = '' + (a[sort.field] || '');
-                const y = '' + (b[sort.field] || '');
+            if (sort.weight !== 0) {
+                const sorted = [...this.haystack];
+                sorted.sort((a, b) => {
+                    const x = '' + (a[sort.field] || '');
+                    const y = '' + (b[sort.field] || '');
 
-                return x.localeCompare(y, 'en', {
-                    sensitivity: 'base',
-                    ignorePunctuation: 'true',
-                    numeric: false
-                }) * (sort.direction === 'asc' ? 1 : -1);
-            });
+                    return x.localeCompare(y, 'en', {
+                        sensitivity: 'base',
+                        ignorePunctuation: 'true',
+                        numeric: false
+                    }) * (sort.direction === 'asc' ? 1 : -1);
+                });
 
-            sorted.forEach((item, sortIndex) => {
-                weights[item.__search_data_index__] += ((this.haystack.length - sortIndex) / this.haystack.length) * sort.weight;
-            });
+                sorted.forEach((item, sortIndex) => {
+                    weights[item.__search_data_index__] += ((this.haystack.length - sortIndex) / this.haystack.length) * sort.weight;
+                });
+            }
         });
 
         const tokens = this.tokenize(needle);
