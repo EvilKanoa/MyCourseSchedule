@@ -1,13 +1,27 @@
 import React, {PureComponent} from 'react';
 import {withRouter} from 'react-router-dom';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+
 
 import Topbar from 'components/layout/Topbar';
 import Sidebar from 'components/layout/Sidebar';
+import {fetchCourses} from 'reducers/courses';
 
 import './App.scss';
 
 @withRouter
+@connect(
+    null,
+    (dispatch) => bindActionCreators({
+        fetchCourses
+    }, dispatch)
+)
 class App extends PureComponent {
+    componentDidMount() {
+        this.props.fetchCourses();
+    }
+
     render() {
         return (
             <div id='app'>

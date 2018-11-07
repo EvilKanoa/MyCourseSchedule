@@ -1,13 +1,11 @@
 import React, {PureComponent} from 'react';
-import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import _ from 'lodash';
 
 import {
     getCourses,
     getError,
-    isLoading,
-    fetchCourses
+    isLoading
 } from 'reducers/courses';
 
 import Paginate from 'react-paginate';
@@ -24,10 +22,7 @@ const PAGE_ITEM_COUNT = 10;
         courses: getCourses(state),
         loading: isLoading(state),
         error: getError(state)
-    }),
-    (dispatch) => bindActionCreators({
-        fetchCourses
-    }, dispatch)
+    })
 )
 class CoursesView extends PureComponent {
     constructor() {
@@ -37,10 +32,6 @@ class CoursesView extends PureComponent {
             courses: [],
             page: 0,
         };
-    }
-
-    componentDidMount() {
-        this.props.fetchCourses();
     }
 
     updateCourses = (courses) => {
