@@ -44,7 +44,7 @@ class WeekCalendar extends PureComponent {
     );
 
     static eventRenderer = (event) => (
-        <div className='default-calendar-event'>
+        <div className='default-calendar-event calendar-event'>
             { event.content }
         </div>
     );
@@ -169,7 +169,7 @@ class WeekCalendar extends PureComponent {
                         style={{
                             gridColumnStart: dayPos + 2,
                             gridColumnEnd: dayPos + 3,
-                            gridRowStart: this.gridify(event.start - start, precision),
+                            gridRowStart: this.gridify(event.start - start, precision) + 2,
                             gridRowEnd: this.gridify(event.end - start, precision) + 2
                         }}
                     >

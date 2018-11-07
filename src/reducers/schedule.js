@@ -1,15 +1,28 @@
 import {createSelector} from 'reselect';
 import _ from 'lodash';
 
-const initialState = {
+import Storage from 'core/storage';
+import {getCoursesByCode} from 'reducers/courses';
+
+const initialState = Storage.getScheduleState() || {
     selected: [],
 };
 
 // base selectors
 export const getState = (state) => state.schedule;
-export const getCourses = (state) => getState(state).selected;
+export const getSelectedCourses = (state) => getState(state).selected;
 
 // computed selectors
+export const getSchedules = createSelector(
+    [getCoursesByCode, getSelectedCourses],
+    (courses, selected) => [_.flatMap(selected,
+        (code) => _.map(courses[code].sections[0].meetings, (meeting) => ({
+            ...meeting,
+            course: code,
+            section: courses[code].sections[0].sectionId
+        }))
+    )]
+);
 
 // action-creators
 export const setSelectedCourses = (selected = []) => ({
@@ -28,7 +41,7 @@ export const removeCourse = (courses = []) => ({
 });
 
 // reducer
-export default (state = initialState, { type, ...action }) => {
+const reducer = (state = initialState, { type, ...action }) => {
     switch (type) {
         case 'SET_SELECTED_COURSES': return {
             ...state,
@@ -37,7 +50,7 @@ export default (state = initialState, { type, ...action }) => {
 
         case 'ADD_SELECTED_COURSES': return {
             ...state,
-            selected: _.uniqBy([...state.selected, ...action.data], 'code')
+            selected: _.uniq([...state.selected, ...action.data])
         };
 
         case 'REMOVE_SELECTED_COURSES': return {
@@ -49,4 +62,10 @@ export default (state = initialState, { type, ...action }) => {
             ...state
         };
     }
+};
+
+export default (state, action) => {
+    const newState = reducer(state, action);
+    Storage.updateSchedule(newState);
+    return newState;
 };

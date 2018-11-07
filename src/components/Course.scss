@@ -63,7 +63,7 @@
 
     .section-header {
       display: flex;
-      flex-flow: row wrap;
+      flex-flow: row nowrap;
       pointer-events: auto;
       cursor: pointer;
       user-select: none;
@@ -113,6 +113,32 @@
           display: flex;
           justify-content: center;
         }
+      }
+    }
+  }
+
+  &.mini {
+    .title {
+      align-self: start;
+      font-size: 18px;
+      font-weight: normal;
+    }
+
+    .sections-header {
+      padding: 5px 0;
+      font-size: 16px;
+    }
+
+    .sections .course-section .section-header {
+      .section-title, .section-faculty, .section-status, .section-types {
+        flex: 1 1 auto;
+        padding: 0 5px;
+        text-align: center;
+        border-right: 1px solid rgba($theme-color-dark, 0.5);
+      }
+
+      .section-types {
+        border-right: 0;
       }
     }
   }

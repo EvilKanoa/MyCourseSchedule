@@ -28,6 +28,7 @@ class CourseSearch extends PureComponent {
     static propTypes = {
         placeholder: PropTypes.string,
         onChange: PropTypes.func,
+        allowEmpty: PropTypes.bool,
         engine: PropTypes.oneOf(['sifter', 'search']),
         sort: PropTypes.shape({
             code: SORT_PROP_TYPE,
@@ -40,7 +41,8 @@ class CourseSearch extends PureComponent {
     static defaultProps = {
         placeholder: '',
         onChange: () => {},
-        engine: 'sifter',
+        engine: 'search',
+        allowEmpty: true,
         sort: {
             code: { weight: 0.25, direction: 'asc' },
             name: false,
@@ -59,7 +61,7 @@ class CourseSearch extends PureComponent {
 
     componentDidMount() {
         this.props.onChange(
-            this.searchResults(this.state.search, this.props.courses, this.props.sort, this.props.engine)
+            this.searchResults(this.state.search, this.props.courses, this.props.sort, this.props.engine, this.props.allowEmpty)
         );
     }
 
@@ -68,9 +70,10 @@ class CourseSearch extends PureComponent {
                 prevProps.sort !== this.props.sort ||
                 prevProps.onChange !== this.props.onChange ||
                 prevState.search !== this.state.search ||
-                prevProps.engine !== this.props.engine) {
+                prevProps.engine !== this.props.engine ||
+                prevProps.allowEmpty !== this.props.allowEmpty) {
             this.props.onChange(
-                this.searchResults(this.state.search, this.props.courses, this.props.sort, this.props.engine)
+                this.searchResults(this.state.search, this.props.courses, this.props.sort, this.props.engine, this.props.allowEmpty)
             );
         }
     }
@@ -98,7 +101,7 @@ class CourseSearch extends PureComponent {
         field
     })));
 
-    searchResults = defaultMemoize((search = '', courses = [], sort, engine) => {
+    searchResults = defaultMemoize((search = '', courses = [], sort, engine, allowEmpty) => {
         const results = engine === 'search' ?
             this.getSearch(courses).search(
                 search,
@@ -120,7 +123,9 @@ class CourseSearch extends PureComponent {
                 }
             );
 
-        return _.map(results.items, ({ id }) => courses[id]);
+        return (allowEmpty || search.length) ?
+            _.map(results.items, ({ id }) => courses[id]) :
+            [];
     });
 
     inputChangeHandler = (e) => {

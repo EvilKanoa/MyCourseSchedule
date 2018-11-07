@@ -43,9 +43,23 @@ const ORDERED_DAY_LABELS = [
     'Sunday'
 ];
 
+export const computeEvents = (meetings) => _.map(
+    _.filter(meetings, ({ type }) => type !== 'EXAM'),
+    ({ type, day, start, end, ...rest }) => ({
+        ...rest,
+        days: [day],
+        start: parseInt(start.split(':')[0] * 60, 10) + parseInt(start.split(':')[1], 10),
+        end: parseInt(end.split(':')[0] * 60, 10) + parseInt(end.split(':')[1], 10),
+        content: ORDERED_MEETING_TYPES.includes(type) ?
+            ORDERED_MEETING_LABELS[ORDERED_MEETING_TYPES.indexOf(type)] :
+            type
+    })
+);
+
 class Course extends PureComponent {
     static propTypes = {
         calendar: PropTypes.bool,
+        mini: PropTypes.bool,
         data: PropTypes.shape({
             code: PropTypes.string.isRequired,
             name: PropTypes.string,
@@ -72,6 +86,7 @@ class Course extends PureComponent {
     };
 
     static defaultProps = {
+        mini: false,
         calendar: false,
     };
 
@@ -92,18 +107,6 @@ class Course extends PureComponent {
             });
         }
     };
-
-    computeEvents = (section) => _.map(
-        _.filter(section.meetings, ({ type }) => type !== 'EXAM'),
-        ({ type, day, start, end, location }) => ({
-            days: [day],
-            start: parseInt(start.split(':')[0] * 60, 10) + parseInt(start.split(':')[1], 10),
-            end: parseInt(end.split(':')[0] * 60, 10) + parseInt(end.split(':')[1], 10),
-            content: ORDERED_MEETING_TYPES.includes(type) ?
-                ORDERED_MEETING_LABELS[ORDERED_MEETING_TYPES.indexOf(type)] :
-                type
-        })
-    );
 
     getSectionTypes = (section) => {
         const counts = _.countBy(section.meetings, 'type');
@@ -153,25 +156,32 @@ class Course extends PureComponent {
 
 
     render() {
-        const { data, calendar } = this.props;
+        const { data, calendar, mini, className } = this.props;
         const isOpened = (section) => this.state.openedSections.includes(section.sectionId);
 
         return (
-            <div className='course-widget'>
+            <div className={cx('course-widget', { mini }, className)}>
                 <span className='title'>
-                    { `${data.code} ${data.name || ''} (${data.term || ''}) [${data.credits || ''}]` }
+                    { mini ?
+                        `${data.code} ${data.name || ''}` :
+                        `${data.code} ${data.name || ''} (${data.term || ''}) [${data.credits || ''}]`
+                    }
                 </span>
-                <div className='details'>
-                    <span className='details-campus'>
-                        Campus: { data.location || '' }
-                    </span>
-                    <span className='details-level'>
-                        Academic Level: { data .level || '' }
-                    </span>
-                </div>
-                <div className='description'>
-                    { data.description || `No description provided for ${data.code}.` }
-                </div>
+                {!mini &&
+                    <div className='details'>
+                            <span className='details-campus'>
+                                Campus: {data.location || ''}
+                            </span>
+                        <span className='details-level'>
+                                Academic Level: {data.level || ''}
+                            </span>
+                    </div>
+                }
+                { !mini &&
+                    <div className='description'>
+                        { data.description || `No description provided for ${data.code}.` }
+                    </div>
+                }
 
                 <div className='sections-header'>Sections</div>
                 <div className='sections'>
@@ -190,13 +200,16 @@ class Course extends PureComponent {
                                 className='section-header'
                                 onClick={() => this.toggleSection(section)}
                             >
-                                <span className='section-title'>Section { section.sectionId }</span>
+                                <span className='section-title'>{ !mini && 'Section' } { section.sectionId }</span>
                                 <span className='section-faculty'>{ section.faculty || '' }</span>
                                 <span className='section-status'>
-                                    <p>{ section.status || '' } - { `${section.available || 0}/${section.capacity || 0}` }</p>
+                                    { mini ?
+                                        <p>{`${section.available || 0}/${section.capacity || 0}`}</p> :
+                                        <p>{section.status || ''} - {`${section.available || 0}/${section.capacity || 0}`}</p>
+                                    }
                                 </span>
                                 { this.getSectionTypes(section) }
-                                { isOpened(section) ?
+                                { !mini && (isOpened(section) ?
                                     <CollapseIcon
                                         size={16}
                                         className='icon'
@@ -205,7 +218,7 @@ class Course extends PureComponent {
                                         size={15}
                                         className='icon'
                                     />
-                                }
+                                ) }
                             </div>
                             { isOpened(section) &&
                                 <div className='section-body'>
@@ -218,7 +231,7 @@ class Course extends PureComponent {
                                             start={8 * 60}
                                             end={22 * 60}
                                             weekStart={'monday'}
-                                            events={this.computeEvents(section)}
+                                            events={computeEvents(section.meetings)}
                                         />
                                     }
                                 </div>
