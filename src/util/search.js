@@ -97,8 +97,6 @@ class Search {
             results = results.filter((result) => result.weight > options.cutoff);
         }
 
-        console.log(results);
-
         return {
             needle,
             options,
