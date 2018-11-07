@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"I'm lazy and need to add tests...\" && exit 0",
     "dev": "npm start",
-    "start": "NODE_ENV=development webpack-dev-server --env.WEBADVISOR_API=http://localhost:3001/ --open --config webpack.dev.js --colors --progress --no-info",
+    "start": "NODE_ENV=development webpack-dev-server --env.WEBADVISOR_API=https://webadvisor-api.herokuapp.com/ --open --config webpack.dev.js --colors --progress --no-info",
     "build": "NODE_ENV=production webpack --env.WEBADVISOR_API=https://webadvisor-api.herokuapp.com/ --config webpack.prod.js",
     "prod": "NODE_ENV=production npm run build && http-server \"./dist\" -p ${PORT:=80} --utc --push-state"
   },
