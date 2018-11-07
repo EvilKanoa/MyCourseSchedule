@@ -12,6 +12,7 @@ import {
 
 import Course from 'components/Course';
 import Card from 'components/Card';
+import CourseSearch from 'components/CourseSearch';
 
 import './CoursesView.scss';
 
@@ -26,13 +27,28 @@ import './CoursesView.scss';
     }, dispatch)
 )
 class CoursesView extends PureComponent {
+    constructor() {
+        super();
+
+        this.state = {
+            courses: [],
+        };
+    }
+
     componentDidMount() {
         this.props.fetchCourses();
     }
 
+    updateCourses = (courses) => {
+        this.setState({ courses });
+    };
+
     render() {
         return (
             <div id='view-courses'>
+                <CourseSearch
+                    onChange={this.updateCourses}
+                />
                 <h3>
                     {
                         this.props.loading ?
@@ -46,7 +62,7 @@ class CoursesView extends PureComponent {
                     { this.props.error }
                 </h3>
                 <h1> Courses </h1>
-                { _.map([..._.take(this.props.courses, 20), _.find(this.props.courses, { code: 'CIS*1500'}) ], (course) =>
+                { _.map(_.take(this.state.courses, 20), (course) =>
                     course && course.code && (
                         <Card className='course-card' key={course.code}>
                             <Course data={course}/>
