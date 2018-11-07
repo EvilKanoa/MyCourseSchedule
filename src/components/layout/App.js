@@ -3,6 +3,7 @@ import {withRouter} from 'react-router-dom';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
+import * as Sentry from '@sentry/browser';
 
 import Topbar from 'components/layout/Topbar';
 import Sidebar from 'components/layout/Sidebar';
@@ -20,6 +21,16 @@ import './App.scss';
 class App extends PureComponent {
     componentDidMount() {
         this.props.fetchCourses();
+    }
+
+    componentDidCatch(error, errorInfo) {
+        this.setState({ error });
+        Sentry.withScope(scope => {
+            Object.keys(errorInfo).forEach(key => {
+                scope.setExtra(key, errorInfo[key]);
+            });
+            Sentry.captureException(error);
+        });
     }
 
     render() {
