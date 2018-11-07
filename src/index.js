@@ -15,6 +15,8 @@ if (process.env.NODE_ENV === 'production' && process.env.SENTRY_DSN) {
     });
 }
 
+window.getState = store.getState;
+
 render(
     <Provider store={store}>
         {Routes}

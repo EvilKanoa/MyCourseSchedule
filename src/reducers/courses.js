@@ -29,7 +29,7 @@ const beginCourseFetch = () => ({
 });
 
 const courseFetchSucceeded = (courses = []) => (dispatch) => {
-    if (courses && courses.length) Storage.updateCourses(courses)
+    if (courses && courses.length) Storage.updateCourses(courses);
     dispatch({
         type: 'COURSE_FETCH_SUCCEEDED',
         data: courses
@@ -45,8 +45,13 @@ export const fetchCourses = () => async (dispatch, getState) => {
     dispatch(beginCourseFetch());
     return API.getCourses(getTerm(getState()))
         .then((data) => {
-            dispatch(courseFetchSucceeded(data));
+            if (data && data.length) {
+                dispatch(courseFetchSucceeded(data));
+            } else {
+                return Promise.reject('No data received from server');
+            }
         }).catch((err) => {
+            console.error(err.message || err);
             dispatch(courseFetchFailed(err.message || err));
         });
 };

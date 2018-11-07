@@ -9,9 +9,9 @@ import {
 } from 'reducers/courses';
 
 import {
-    FiLoader as LoaderIcon,
-    FiDownload as DownloadIcon
-} from 'react-icons/fi';
+    FaSpinner as LoaderIcon,
+    FaDownload as DownloadIcon
+} from 'react-icons/fa';
 
 import HeaderImage from 'header.png';
 import './Topbar.scss';
@@ -26,22 +26,28 @@ import './Topbar.scss';
     }, dispatch)
 )
 class Topbar extends PureComponent {
+    refresh = () => {
+        if (!this.props.loading) {
+            this.props.fetchCourses();
+        }
+    };
+
     render() {
         return (
             <div id='topbar'>
                 <img id='header-image' src={HeaderImage}/>
                 <div className='status-icon'
-                     onClick={() => this.props.fetchCourses()}
+                     onClick={this.refresh}
                 >
                     { this.props.loading ?
                         <LoaderIcon
                             className='loading'
                             size={32}
-                            color='yellow'
+                            color='gray'
                         /> :
                         <DownloadIcon
                             size={32}
-                            color={this.props.error ? 'red' : 'green'}
+                            color={this.props.error ? 'red' : 'gray'}
                         />
                     }
                 </div>

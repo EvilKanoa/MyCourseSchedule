@@ -12,7 +12,7 @@ import {getCourses} from 'reducers/courses';
 import './CourseSearch.scss';
 
 const SORT_PROP_TYPE = PropTypes.oneOfType([
-    PropTypes.oneOf([false]),
+    PropTypes.oneOf([false, undefined, null]),
     PropTypes.shape({
         weight: PropTypes.number.isRequired,
         direction: PropTypes.oneOf(['asc', 'desc']).isRequired
