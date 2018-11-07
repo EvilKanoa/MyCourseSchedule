@@ -70,7 +70,7 @@ class CoursesView extends PureComponent {
                 { _.map(courses.slice(PAGE_ITEM_COUNT * page, PAGE_ITEM_COUNT * (page + 1)), (course) =>
                     course && course.code && (
                         <Card className='course-card' key={course.code}>
-                            <Course data={course}/>
+                            <Course data={course} calendar={true}/>
                         </Card>
                     )
                 ) }
