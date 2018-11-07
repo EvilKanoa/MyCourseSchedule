@@ -2,6 +2,7 @@ import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import Sifter from 'sifter';
+import Search from 'util/search';
 import {connect} from 'react-redux';
 import {defaultMemoize} from 'reselect';
 import _ from 'lodash';
@@ -39,8 +40,8 @@ class CourseSearch extends PureComponent {
         placeholder: '',
         onChange: () => {},
         sort: {
-            code: { weight: 2, direction: 'asc' },
-            name: { weight: 1, direction: 'asc' },
+            code: { weight: 0.5, direction: 'asc' },
+            name: false,
             credits: false,
             location: false,
         },
@@ -87,15 +88,20 @@ class CourseSearch extends PureComponent {
         }))
     ));
 
+    getSearch = defaultMemoize((courses) => new Search(courses, ['code', 'name', 'credits', 'location', 'description']));
+
+    getSearchSort = defaultMemoize((sort) => _.map(sort, (opt, field) => ({
+        ...opt,
+        field
+    })));
+
     searchResults = defaultMemoize((search = '', courses = [], sort) => {
-        const results = this.getSifter(courses).search(
+        const results = this.getSearch(courses).search(
             search,
             {
-                fields: ['title', 'credits', 'location', 'description'],
-                sort: this.getSort(sort),
-                filter: true,
-                conjunction: 'or',
-                nesting: false
+                fields: ['code', 'name', 'credits', 'location', 'description'],
+                weight: 1,
+                sort: this.getSearchSort(sort)
             }
         );
 
