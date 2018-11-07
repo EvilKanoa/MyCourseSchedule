@@ -28,6 +28,7 @@ class CourseSearch extends PureComponent {
     static propTypes = {
         placeholder: PropTypes.string,
         onChange: PropTypes.func,
+        engine: PropTypes.oneOf(['sifter', 'search']),
         sort: PropTypes.shape({
             code: SORT_PROP_TYPE,
             name: SORT_PROP_TYPE,
@@ -39,8 +40,9 @@ class CourseSearch extends PureComponent {
     static defaultProps = {
         placeholder: '',
         onChange: () => {},
+        engine: 'sifter',
         sort: {
-            code: { weight: 0.5, direction: 'asc' },
+            code: { weight: 0.25, direction: 'asc' },
             name: false,
             credits: false,
             location: false,
@@ -57,7 +59,7 @@ class CourseSearch extends PureComponent {
 
     componentDidMount() {
         this.props.onChange(
-            this.searchResults(this.state.search, this.props.courses, this.props.sort)
+            this.searchResults(this.state.search, this.props.courses, this.props.sort, this.props.engine)
         );
     }
 
@@ -65,14 +67,15 @@ class CourseSearch extends PureComponent {
         if (prevProps.courses !== this.props.courses ||
                 prevProps.sort !== this.props.sort ||
                 prevProps.onChange !== this.props.onChange ||
-                prevState.search !== this.state.search) {
+                prevState.search !== this.state.search ||
+                prevProps.engine !== this.props.engine) {
             this.props.onChange(
-                this.searchResults(this.state.search, this.props.courses, this.props.sort)
+                this.searchResults(this.state.search, this.props.courses, this.props.sort, this.props.engine)
             );
         }
     }
 
-    getSort = defaultMemoize((sort) => _.sortBy(_.filter(_.map(
+    getSifterSort = defaultMemoize((sort) => _.sortBy(_.filter(_.map(
         sort,
         (opt, field) => opt && {
             field,
@@ -95,15 +98,27 @@ class CourseSearch extends PureComponent {
         field
     })));
 
-    searchResults = defaultMemoize((search = '', courses = [], sort) => {
-        const results = this.getSearch(courses).search(
-            search,
-            {
-                fields: ['code', 'name', 'credits', 'location', 'description'],
-                weight: 1,
-                sort: this.getSearchSort(sort)
-            }
-        );
+    searchResults = defaultMemoize((search = '', courses = [], sort, engine) => {
+        const results = engine === 'search' ?
+            this.getSearch(courses).search(
+                search,
+                {
+                    fields: ['code', 'name'],
+                    sort: this.getSearchSort(sort),
+                    conjunction: 'or',
+                    cutoff: 0.275
+                }
+            ) :
+            this.getSifter(courses).search(
+                search,
+                {
+                    fields: ['code', 'name'],
+                    sort: this.getSifterSort(sort),
+                    conjunction: 'or',
+                    filter: true,
+                    nesting: false
+                }
+            );
 
         return _.map(results.items, ({ id }) => courses[id]);
     });

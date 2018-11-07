@@ -26,26 +26,29 @@ class Search {
     tokenize = (query) => query
         .split(/\s+/)
         .map(
-            (rawToken) => rawToken && rawToken.length && new RegExp(_.escapeRegExp(rawToken), 'ig')
+            (rawToken) => rawToken && rawToken.length && {
+                regex: new RegExp(_.escapeRegExp(rawToken), 'i'),
+                string: rawToken
+            }
         ).filter((token) => !!token);
 
     /**
      * Searches the items for a given query/needle
      * @param needle Query string for search
      * @param options Options for search. e.g., {
-     *     fields: ['title', 'label'],
-     *     weight: 0 - 100,
+     *     fields: ['title'],
      *     sort: [{
      *         field: 'title',
      *         weight: 0 - 100,
      *         direction: 'asc' | 'desc'
-     *     }]
+     *     }],
+     *     cutoff: 0.25
      * }
      */
     search = (needle = '', options = {
-        fields: ['label'],
-        weight: 1,
+        fields: [],
         sort: [],
+        cutoff: 0.25,
     }) => {
         const weights = Array(this.haystack.length).fill(0);
         const safeSort = [...options.sort].filter((opt) => opt.field && opt.direction && opt.weight);
@@ -68,22 +71,33 @@ class Search {
         });
 
         const tokens = this.tokenize(needle);
-        const maxMatches = options.fields.length * tokens.length;
         this.haystack.forEach((item) => {
-            let matches = 0;
+            let weight = 0;
             for (const field of options.fields) {
                 for (const token of tokens) {
-                    matches += _.get((('' + item[field]) || '').match(token), 'length', 0);
+                    const value = '' + (item[field] || '');
+                    const pos = value.search(token.regex);
+                    let moreWeight = 0;
+                    if (pos !== -1) {
+                        moreWeight += (token.string.length * 2) / value.length;
+                        if (pos === 0) moreWeight += 0.5;
+                    }
+                    weight += moreWeight;
                 }
             }
-            weights[item.__search_data_index__] += (matches / maxMatches) * options.weight;
+            weights[item.__search_data_index__] += weight / options.fields.length;
         });
 
-        const totalWeight = options.weight + safeSort.reduce((sum, { weight }) => sum + weight, 0);
-        const results = this.haystack.map(({ __search_data_index__ }) => ({
+        let results = this.haystack.map(({ __search_data_index__ }) => ({
             id: __search_data_index__,
-            weight: weights[__search_data_index__] / totalWeight
+            weight: weights[__search_data_index__]
         })).sort((a, b) => b.weight - a.weight);
+
+        if (needle.length) {
+            results = results.filter((result) => result.weight > options.cutoff);
+        }
+
+        console.log(results);
 
         return {
             needle,

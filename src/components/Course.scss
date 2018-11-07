@@ -106,7 +106,8 @@
 
       .section-calendar {
         height: 600px;
-        margin-top: 30px;
+        margin: 10px;
+        background: rgba($theme-color-primary, 0.2);
 
         .default-calendar-event {
           display: flex;

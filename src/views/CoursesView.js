@@ -65,6 +65,7 @@ class CoursesView extends PureComponent {
                     className='course-filter'
                     placeholder='Filter courses...'
                     onChange={this.updateCourses}
+                    engine='search'
                 />
 
                 { _.map(courses.slice(PAGE_ITEM_COUNT * page, PAGE_ITEM_COUNT * (page + 1)), (course) =>
