@@ -130,9 +130,11 @@ class ScheduleView extends PureComponent {
                     </Card>
                 </div>
 
-                <Card className='bottom'>
-                    Options 'n stuff
-                </Card>
+                { 
+                    /* <Card className='bottom'>
+                        Options 'n stuff
+                    </Card> */
+		}
             </div>
         )
     }
