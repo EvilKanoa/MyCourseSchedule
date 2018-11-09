@@ -19,7 +19,7 @@ const routes = (
                 <Route path='/dashboard' component={Dashboard}/>
                 <Route path='/schedule' component={Schedule}/>
                 <Route path='/courses' component={Courses}/>
-                <Redirect to='/dashboard'/>
+                <Redirect to='/schedule'/>
             </Switch>
         </App>
     </BrowserRouter>
