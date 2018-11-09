@@ -43,16 +43,19 @@ const ORDERED_DAY_LABELS = [
     'Sunday'
 ];
 
-export const computeEvents = (meetings) => _.map(
+const defaultContentRenderer = (meeting) =>
+    ORDERED_MEETING_TYPES.includes(meeting.type) ?
+        ORDERED_MEETING_LABELS[ORDERED_MEETING_TYPES.indexOf(meeting.type)] :
+        meeting.type;
+
+export const computeEvents = (meetings, contentRenderer = defaultContentRenderer) => _.map(
     _.filter(meetings, ({ type }) => type !== 'EXAM'),
-    ({ type, day, start, end, ...rest }) => ({
-        ...rest,
-        days: [day],
-        start: parseInt(start.split(':')[0] * 60, 10) + parseInt(start.split(':')[1], 10),
-        end: parseInt(end.split(':')[0] * 60, 10) + parseInt(end.split(':')[1], 10),
-        content: ORDERED_MEETING_TYPES.includes(type) ?
-            ORDERED_MEETING_LABELS[ORDERED_MEETING_TYPES.indexOf(type)] :
-            type
+    (meeting) => ({
+        ...meeting,
+        days: [meeting.day],
+        start: parseInt(meeting.start.split(':')[0] * 60, 10) + parseInt(meeting.start.split(':')[1], 10),
+        end: parseInt(meeting.end.split(':')[0] * 60, 10) + parseInt(meeting.end.split(':')[1], 10),
+        content: contentRenderer(meeting)
     })
 );
 
@@ -60,6 +63,8 @@ class Course extends PureComponent {
     static propTypes = {
         calendar: PropTypes.bool,
         mini: PropTypes.bool,
+        selectedSection: PropTypes.string,
+        sectionElementRenderer: PropTypes.func,
         data: PropTypes.shape({
             code: PropTypes.string.isRequired,
             name: PropTypes.string,
@@ -87,6 +92,7 @@ class Course extends PureComponent {
 
     static defaultProps = {
         mini: false,
+        sectionElementRenderer: () => {},
         calendar: false,
     };
 
@@ -156,7 +162,14 @@ class Course extends PureComponent {
 
 
     render() {
-        const { data, calendar, mini, className } = this.props;
+        const {
+            data,
+            calendar,
+            mini,
+            selectedSection,
+            sectionElementRenderer,
+            className
+        } = this.props;
         const isOpened = (section) => this.state.openedSections.includes(section.sectionId);
 
         return (
@@ -191,7 +204,8 @@ class Course extends PureComponent {
                                 'course-section',
                                 {
                                     expanded: isOpened(section),
-                                    closed: section.status === 'Closed'
+                                    closed: section.status === 'Closed',
+                                    selected: selectedSection === section.sectionId
                                 }
                             )}
                             key={`${data.code}*${section.sectionId}`}
@@ -222,6 +236,7 @@ class Course extends PureComponent {
                             </div>
                             { isOpened(section) &&
                                 <div className='section-body'>
+                                    { sectionElementRenderer && sectionElementRenderer(section) }
                                     { this.getMeetingElements(section) }
                                     { calendar &&
                                         <WeekCalendar

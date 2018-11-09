@@ -40,14 +40,8 @@ class ScheduleView extends PureComponent {
         };
     }
 
-    getEventsForSchedules = defaultMemoize((schedules) =>
-        _.map(schedules, (meetings) =>
-            computeEvents(meetings)
-        )
-    );
-
-    formatSchedule = defaultMemoize((schedule) =>
-        _.map(schedule, (meeting) => ({
+    getEventsForSchedule = defaultMemoize(({ meetings }) =>
+        _.map(computeEvents(meetings, ({ type }) => type), (meeting) => ({
             ...meeting,
             content: (
                 <div className='course-meeting'>
@@ -78,63 +72,59 @@ class ScheduleView extends PureComponent {
 
         return (
             <div id='view-schedule'>
-                <div className='top'>
-                    <WeekCalendar
-                        className='schedule'
-                        days={5}
-                        start={8 * 60}
-                        end={21.5 * 60}
-                        interval={30}
-                        weekStart={'monday'}
-                        events={this.formatSchedule(this.getEventsForSchedules(schedules)[0])}
-                    />
+                <Card className='courses'>
+                    <h3>Selected Courses</h3>
+                    <Card className='add-course-card'>
+                        <CourseSearch
+                            className='add-course-search'
+                            placeholder='Add course...'
+                            onChange={this.updateCourses}
+                            allowEmpty={false}
+                        />
 
-                    <Card className='courses'>
-                        <h3>Selected Courses</h3>
-                        <Card className='add-course-card'>
-                            <CourseSearch
-                                className='add-course-search'
-                                placeholder='Add course...'
-                                onChange={this.updateCourses}
-                                allowEmpty={false}
-                            />
-
-                            { !!searched.length &&
-                                <div className='add-course-results'>
-                                    { _.map(_.take(searched, 8), (course) => (
-                                        <div
-                                            className={cx('add-course-result-item', {
-                                                selected: selectedCourses.includes(course.code)
-                                            })}
-                                            onClick={() => this.toggleSelectedCourse(course.code)}
-                                            key={course.code}
-                                        >
-                                            {`${course.code} ${course.name}`}
-                                        </div>
-                                    )) }
-                                </div>
-                            }
-                        </Card>
-
-                        { _.map(selectedCourses, (code) => (
-                            <div className='selected-course' key={code}>
+                        { !!searched.length &&
+                        <div className='add-course-results'>
+                            { _.map(_.take(searched, 8), (course) => (
                                 <div
-                                    className='remove-button'
-                                    onClick={() => this.toggleSelectedCourse(code)}
+                                    className={cx('add-course-result-item', {
+                                        selected: selectedCourses.includes(course.code)
+                                    })}
+                                    onClick={() => this.toggleSelectedCourse(course.code)}
+                                    key={course.code}
                                 >
-                                    Remove
+                                    {`${course.code} ${course.name}`}
                                 </div>
-                                <Course data={courses[code]} mini={true} key={code}/>
-                            </div>
-                        )) }
+                            )) }
+                        </div>
+                        }
                     </Card>
-                </div>
 
-                { 
-                    /* <Card className='bottom'>
-                        Options 'n stuff
-                    </Card> */
-		}
+                    { _.map(selectedCourses, (code) => (
+                        <div className='selected-course' key={code}>
+                            <div
+                                className='remove-button'
+                                onClick={() => this.toggleSelectedCourse(code)}
+                            >
+                                Remove
+                            </div>
+                            <Course data={courses[code]} mini={true} key={code}/>
+                        </div>
+                    )) }
+                </Card>
+
+                <WeekCalendar
+                    className='schedule'
+                    days={5}
+                    start={8 * 60}
+                    end={21.5 * 60}
+                    interval={30}
+                    weekStart={'monday'}
+                    events={this.getEventsForSchedule(_.values(schedules)[0])}
+                />
+
+                <Card className='schedules'>
+                    <h3>Schedules</h3>
+                </Card>
             </div>
         )
     }

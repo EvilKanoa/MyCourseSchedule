@@ -1,8 +1,16 @@
 import {createSelector} from 'reselect';
 import _ from 'lodash';
 
+import flow from 'lodash/fp/flow';
+import map from 'lodash/fp/map';
+import reduce from 'lodash/fp/reduce';
+import flatten from 'lodash/fp/flatten';
+import keyBy from 'lodash/fp/keyBy';
+import sortBy from 'lodash/fp/sortBy';
+import join from 'lodash/fp/join';
+
 import Storage from 'core/storage';
-import {getCoursesByCode} from 'reducers/courses';
+import {getCoursesByCode, getTerm} from 'reducers/courses';
 
 const initialState = Storage.getScheduleState() || {
     selected: [],
@@ -14,14 +22,50 @@ export const getSelectedCourses = (state) => getState(state).selected;
 
 // computed selectors
 export const getSchedules = createSelector(
-    [getCoursesByCode, getSelectedCourses],
-    (courses, selected) => [_.flatMap(selected,
-        (code) => _.map(courses[code].sections[0].meetings, (meeting) => ({
-            ...meeting,
-            course: code,
-            section: courses[code].sections[0].sectionId
-        }))
-    )]
+    [getCoursesByCode, getSelectedCourses, getTerm],
+    (courses, selected, term) => flow(
+        map(code => courses[code]),
+        map(course => ({
+            ...course,
+            sections: flow(
+                map(section => ({
+                    ...section,
+                    course: course.code,
+                    meetings: flow(
+                        map(meeting => ({
+                            ...meeting,
+                            course: course.code,
+                            section: section.sectionId
+                        }))
+                    )(section.meetings)
+                }))
+            )(course.sections)
+        })),
+        map(course => course.sections),
+        reduce(
+            (schedules, sections) => flow(
+                map(result => flow(
+                    map(section => [...result, section])
+                )(sections)),
+                flatten
+            )(schedules),
+            [[]]
+        ),
+        map(sections => ({
+            sections,
+            meetings: flow(
+                map(section => section.meetings),
+                flatten
+            )(sections),
+            id: `${term},${flow(
+                map(section => `${section.course}*${section.sectionId}`),
+                sortBy(str => str),
+                join(',')
+            )(sections)}`
+        })),
+        sortBy(schedule => schedule.id),
+        keyBy(schedule => schedule.id)
+    )(selected)
 );
 
 // action-creators
