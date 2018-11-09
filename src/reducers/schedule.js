@@ -12,13 +12,16 @@ import join from 'lodash/fp/join';
 import Storage from 'core/storage';
 import {getCoursesByCode, getTerm} from 'reducers/courses';
 
-const initialState = Storage.getScheduleState() || {
-    selected: [],
+const initialState = {
+    selectedCourses: [],
+    selectedSchedule: '',
+    ...Storage.getScheduleState()
 };
 
 // base selectors
 export const getState = (state) => state.schedule;
-export const getSelectedCourses = (state) => getState(state).selected;
+export const getSelectedCourses = (state) => getState(state).selectedCourses;
+export const getSelectedScheduleId = (state) => getState(state).selectedSchedule;
 
 // computed selectors
 export const getSchedules = createSelector(
@@ -30,6 +33,7 @@ export const getSchedules = createSelector(
             sections: flow(
                 map(section => ({
                     ...section,
+                    id: `${course.code}*${section.sectionId}`,
                     course: course.code,
                     meetings: flow(
                         map(meeting => ({
@@ -58,8 +62,8 @@ export const getSchedules = createSelector(
                 flatten
             )(sections),
             id: `${term},${flow(
-                map(section => `${section.course}*${section.sectionId}`),
-                sortBy(str => str),
+                map(section => section.id),
+                sortBy(id => id),
                 join(',')
             )(sections)}`
         })),
@@ -68,12 +72,23 @@ export const getSchedules = createSelector(
     )(selected)
 );
 
-// action-creators
-export const setSelectedCourses = (selected = []) => ({
-    type: 'SET_SELECTED_COURSES',
-    data: selected
-});
+export const getSelectedSchedule = createSelector(
+    [getSchedules, getSelectedScheduleId],
+    (schedules, scheduleId) =>
+        schedules[scheduleId] ||
+            (_.keys(schedules).length && schedules[_.keys(schedules)[0]]) ||
+            undefined
+);
 
+export const getSelectedSections = createSelector(
+    [getSelectedSchedule],
+    (schedule) => _.map(
+        _.get(schedule, 'sections', []),
+        'id'
+    )
+);
+
+// action-creators
 export const selectCourse = (courses = []) => ({
     type: 'ADD_SELECTED_COURSES',
     data: _.isArray(courses) ? courses : [courses]
@@ -84,22 +99,45 @@ export const removeCourse = (courses = []) => ({
     data: _.isArray(courses) ? courses : [courses]
 });
 
+export const selectSchedule = (scheduleId = '') => ({
+    type: 'SET_SELECTED_SCHEDULE',
+    data: scheduleId
+});
+
+export const selectSection = (sectionId) => (dispatch, getState) => {
+    if (!sectionId || !sectionId.length) return;
+
+    const course = _.join(_.take(sectionId.split('*'), 2), '*');
+    const scheduleId = getSelectedSchedule(getState()).id;
+    if (!scheduleId || !scheduleId.length) return;
+
+    const computedId = scheduleId.replace(new RegExp(`${course.replace('*', '\\*')}\\*[^,]*`), sectionId);
+    if (!getSchedules(getState())[computedId]) return;
+
+    dispatch(selectSchedule(computedId));
+};
+
 // reducer
 const reducer = (state = initialState, { type, ...action }) => {
     switch (type) {
         case 'SET_SELECTED_COURSES': return {
             ...state,
-            selected: action.data
+            selectedCourses: action.data
         };
 
         case 'ADD_SELECTED_COURSES': return {
             ...state,
-            selected: _.uniq([...state.selected, ...action.data])
+            selectedCourses: _.uniq([...state.selectedCourses, ...action.data])
         };
 
         case 'REMOVE_SELECTED_COURSES': return {
             ...state,
-            selected: _.differenceBy(state.selected, action.data)
+            selectedCourses: _.differenceBy(state.selectedCourses, action.data)
+        };
+
+        case 'SET_SELECTED_SCHEDULE': return {
+            ...state,
+            selectedSchedule: action.data
         };
 
         default: return {

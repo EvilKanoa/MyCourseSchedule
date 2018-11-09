@@ -63,7 +63,7 @@ class Course extends PureComponent {
     static propTypes = {
         calendar: PropTypes.bool,
         mini: PropTypes.bool,
-        selectedSection: PropTypes.string,
+        selectedSections: PropTypes.array,
         sectionElementRenderer: PropTypes.func,
         data: PropTypes.shape({
             code: PropTypes.string.isRequired,
@@ -92,6 +92,7 @@ class Course extends PureComponent {
 
     static defaultProps = {
         mini: false,
+        selectedSections: [],
         sectionElementRenderer: () => {},
         calendar: false,
     };
@@ -166,7 +167,7 @@ class Course extends PureComponent {
             data,
             calendar,
             mini,
-            selectedSection,
+            selectedSections,
             sectionElementRenderer,
             className
         } = this.props;
@@ -205,7 +206,8 @@ class Course extends PureComponent {
                                 {
                                     expanded: isOpened(section),
                                     closed: section.status === 'Closed',
-                                    selected: selectedSection === section.sectionId
+                                    selected: selectedSections.includes(section.sectionId) ||
+                                        selectedSections.includes(`${data.code}*${section.sectionId}`)
                                 }
                             )}
                             key={`${data.code}*${section.sectionId}`}

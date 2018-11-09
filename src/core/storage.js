@@ -42,7 +42,7 @@ class Storage {
 
     updateSchedule = (scheduleState = {}) => this.set('SCHEDULE', scheduleState);
 
-    getScheduleState = () => this.get('SCHEDULE');
+    getScheduleState = () => this.get('SCHEDULE') || {};
 }
 
 const instance = new Storage('MyCourseSchedule_v1_');

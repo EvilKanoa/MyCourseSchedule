@@ -7,10 +7,13 @@ import cx from 'classnames';
 
 import {getCoursesByCode} from 'reducers/courses';
 import {
-    getSelectedCourses,
     selectCourse,
     removeCourse,
-    getSchedules
+    selectSection,
+    getSelectedCourses,
+    getSchedules,
+    getSelectedSchedule,
+    getSelectedSections
 } from 'reducers/schedule';
 
 import CourseSearch from 'components/CourseSearch'
@@ -24,11 +27,14 @@ import './ScheduleView.scss';
     (state) => ({
         courses: getCoursesByCode(state),
         selectedCourses: getSelectedCourses(state),
-        schedules: getSchedules(state)
+        schedules: getSchedules(state),
+        selectedSchedule: getSelectedSchedule(state),
+        selectedSections: getSelectedSections(state),
     }),
     (dispatch) => bindActionCreators({
         selectCourse,
-        removeCourse
+        removeCourse,
+        selectSection,
     }, dispatch)
 )
 class ScheduleView extends PureComponent {
@@ -52,6 +58,18 @@ class ScheduleView extends PureComponent {
         }))
     );
 
+    selectSectionButtonRenderer = (course) => ({ sectionId }) => (
+        <div
+            className='select-section-button button'
+            key={`${course}*${sectionId}`}
+            onClick={() => {
+                this.props.selectSection(`${course}*${sectionId}`);
+            }}
+        >
+            Select { sectionId }
+        </div>
+    );
+
     updateCourses = (searched) => {
         this.setState({
             searched
@@ -67,7 +85,13 @@ class ScheduleView extends PureComponent {
     };
 
     render() {
-        const { courses, selectedCourses, schedules } = this.props;
+        const {
+            courses,
+            selectedCourses,
+            schedules,
+            selectedSchedule,
+            selectedSections
+        } = this.props;
         const { searched } = this.state;
 
         return (
@@ -107,7 +131,13 @@ class ScheduleView extends PureComponent {
                             >
                                 Remove
                             </div>
-                            <Course data={courses[code]} mini={true} key={code}/>
+                            <Course
+                                data={courses[code]}
+                                mini={true}
+                                key={code}
+                                selectedSections={selectedSections}
+                                sectionElementRenderer={this.selectSectionButtonRenderer(code)}
+                            />
                         </div>
                     )) }
                 </Card>
@@ -119,7 +149,7 @@ class ScheduleView extends PureComponent {
                     end={21.5 * 60}
                     interval={30}
                     weekStart={'monday'}
-                    events={this.getEventsForSchedule(_.values(schedules)[0])}
+                    events={this.getEventsForSchedule(selectedSchedule)}
                 />
 
                 <Card className='schedules'>
