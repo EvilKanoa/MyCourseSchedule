@@ -53,8 +53,8 @@ export const computeEvents = (meetings, contentRenderer = defaultContentRenderer
     (meeting) => ({
         ...meeting,
         days: [meeting.day],
-        start: parseInt(meeting.start.split(':')[0] * 60, 10) + parseInt(meeting.start.split(':')[1], 10),
-        end: parseInt(meeting.end.split(':')[0] * 60, 10) + parseInt(meeting.end.split(':')[1], 10),
+        start: (parseInt(meeting.start.split(':')[0], 10) * 60) + parseInt(meeting.start.split(':')[1], 10),
+        end: (parseInt(meeting.end.split(':')[0], 10) * 60) + parseInt(meeting.end.split(':')[1], 10),
         content: contentRenderer(meeting)
     })
 );

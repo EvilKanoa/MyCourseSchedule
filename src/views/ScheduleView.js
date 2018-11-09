@@ -10,14 +10,16 @@ import {
     selectCourse,
     removeCourse,
     selectSection,
+    selectSchedule,
     getSelectedCourses,
     getSchedules,
     getSelectedSchedule,
     getSelectedSections
 } from 'reducers/schedule';
 
-import CourseSearch from 'components/CourseSearch'
 import WeekCalendar from 'components/WeekCalendar';
+import MiniSchedule from 'components/MiniSchedule';
+import CourseSearch from 'components/CourseSearch'
 import Card from 'components/Card';
 import Course, {computeEvents} from 'components/Course';
 
@@ -29,12 +31,13 @@ import './ScheduleView.scss';
         selectedCourses: getSelectedCourses(state),
         schedules: getSchedules(state),
         selectedSchedule: getSelectedSchedule(state),
-        selectedSections: getSelectedSections(state),
+        selectedSections: getSelectedSections(state)
     }),
     (dispatch) => bindActionCreators({
         selectCourse,
         removeCourse,
         selectSection,
+        selectSchedule
     }, dispatch)
 )
 class ScheduleView extends PureComponent {
@@ -45,6 +48,19 @@ class ScheduleView extends PureComponent {
             searched: []
         };
     }
+
+    getMiniSchedules = defaultMemoize((schedules, selectedScheduleId) =>
+        _.map(schedules, (schedule) => (
+            <MiniSchedule
+                schedule={schedule}
+                selected={selectedScheduleId === schedule.id}
+                onClick={({ id }) => {
+                    this.props.selectSchedule(id);
+                }}
+                key={schedule.id}
+            />
+        ))
+    );
 
     getEventsForSchedule = defaultMemoize(({ meetings }) =>
         _.map(computeEvents(meetings, ({ type }) => type), (meeting) => ({
@@ -98,6 +114,7 @@ class ScheduleView extends PureComponent {
             <div id='view-schedule'>
                 <Card className='courses'>
                     <h3>Selected Courses</h3>
+
                     <Card className='add-course-card'>
                         <CourseSearch
                             className='add-course-search'
@@ -154,6 +171,8 @@ class ScheduleView extends PureComponent {
 
                 <Card className='schedules'>
                     <h3>Schedules</h3>
+
+                    { this.getMiniSchedules(schedules, selectedSchedule.id) }
                 </Card>
             </div>
         )

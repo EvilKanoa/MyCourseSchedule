@@ -1,0 +1,35 @@
+@import '_variables.scss';
+
+.mini-schedule {
+  width: 200px;
+  height: 200px;
+
+  display: grid;
+  grid-template-columns: repeat(5, 20%);
+  grid-template-rows: repeat(28, 3.57142857%);
+
+  border: 1px solid $theme-color-dark;
+
+  pointer-events: auto;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    border: 1px solid $theme-color-accent;
+  }
+
+  &.selected {
+    border: 1px solid mix($theme-color-primary, $theme-color-dark, 75%);
+  }
+
+  .mini-schedule-grid-line-x {
+    border-bottom: 1px solid rgba($theme-color-dark, 0.2);
+  }
+  .mini-schedule-grid-line-y {
+    border-right: 1px solid rgba($theme-color-dark, 0.2);
+  }
+
+  .mini-schedule-block {
+    background: $theme-color-primary;
+  }
+}
