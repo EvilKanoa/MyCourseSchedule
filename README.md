@@ -1,6 +1,8 @@
 # My Course Schedule
 ### Quick and easy course schedule development for any institution!
 
+Demo: [mycourseschedule.com](http://www.mycourseschedule.com/) or [my-course-schedule.herokuapp.com](https://my-course-schedule.herokuapp.com/)
+
 ## Development
 This project relies on NodeJS 8+ and npm 4+.
 
