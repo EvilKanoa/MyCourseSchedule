@@ -74,7 +74,7 @@ class Course extends PureComponent {
             level: PropTypes.string,
             term: PropTypes.string,
             sections: PropTypes.arrayOf(PropTypes.shape({
-                sectionId: PropTypes.string.isRequired,
+                id: PropTypes.string.isRequired,
                 faculty: PropTypes.string,
                 available: PropTypes.number,
                 capacity: PropTypes.number,
@@ -105,12 +105,12 @@ class Course extends PureComponent {
         };
     }
 
-    toggleSection = ({ sectionId }) => {
-        if (_.some(this.props.data.sections, { sectionId })) {
+    toggleSection = ({ id }) => {
+        if (_.some(this.props.data.sections, { id })) {
             this.setState({
-                openedSections: this.state.openedSections.includes(sectionId) ?
-                    _.without(this.state.openedSections, sectionId) :
-                    [ ...this.state.openedSections, sectionId ]
+                openedSections: this.state.openedSections.includes(id) ?
+                    _.without(this.state.openedSections, id) :
+                    [ ...this.state.openedSections, id ]
             });
         }
     };
@@ -139,7 +139,7 @@ class Course extends PureComponent {
         return _.map(sorted, ({ type, day, start, end, location }, idx) => (
             <Card
                 className={cx('section-meeting', 'section-meeting-' + type)}
-                key={this.props.data.code + section.sectionId + idx}
+                key={this.props.data.code + section.id + idx}
             >
                 <span className='meeting-type'>
                     {
@@ -171,7 +171,7 @@ class Course extends PureComponent {
             sectionElementRenderer,
             className
         } = this.props;
-        const isOpened = (section) => this.state.openedSections.includes(section.sectionId);
+        const isOpened = (section) => this.state.openedSections.includes(section.id);
 
         return (
             <div className={cx('course-widget', { mini }, className)}>
@@ -206,17 +206,17 @@ class Course extends PureComponent {
                                 {
                                     expanded: isOpened(section),
                                     closed: section.status === 'Closed',
-                                    selected: selectedSections.includes(section.sectionId) ||
-                                        selectedSections.includes(`${data.code}*${section.sectionId}`)
+                                    selected: selectedSections.includes(section.id) ||
+                                        selectedSections.includes(`${data.code}*${section.id}`)
                                 }
                             )}
-                            key={`${data.code}*${section.sectionId}`}
+                            key={`${data.code}*${section.id}`}
                         >
                             <div
                                 className='section-header'
                                 onClick={() => this.toggleSection(section)}
                             >
-                                <span className='section-title'>{ !mini && 'Section' } { section.sectionId }</span>
+                                <span className='section-title'>{ !mini && 'Section' } { section.id }</span>
                                 <span className='section-faculty'>{ section.faculty || '' }</span>
                                 <span className='section-status'>
                                     { mini ?

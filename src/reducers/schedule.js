@@ -33,13 +33,13 @@ export const getSchedules = createSelector(
             sections: flow(
                 map(section => ({
                     ...section,
-                    id: `${course.code}*${section.sectionId}`,
+                    id: `${course.code}*${section.id}`,
                     course: course.code,
                     meetings: flow(
                         map(meeting => ({
                             ...meeting,
                             course: course.code,
-                            section: section.sectionId
+                            section: section.id
                         }))
                     )(section.meetings)
                 }))
@@ -104,14 +104,14 @@ export const selectSchedule = (scheduleId = '') => ({
     data: scheduleId
 });
 
-export const selectSection = (sectionId) => (dispatch, getState) => {
-    if (!sectionId || !sectionId.length) return;
+export const selectSection = (id) => (dispatch, getState) => {
+    if (!id || !id.length) return;
 
-    const course = _.join(_.take(sectionId.split('*'), 2), '*');
+    const course = _.join(_.take(id.split('*'), 2), '*');
     const scheduleId = getSelectedSchedule(getState()).id;
     if (!scheduleId || !scheduleId.length) return;
 
-    const computedId = scheduleId.replace(new RegExp(`${course.replace('*', '\\*')}\\*[^,]*`), sectionId);
+    const computedId = scheduleId.replace(new RegExp(`${course.replace('*', '\\*')}\\*[^,]*`), id);
     if (!getSchedules(getState())[computedId]) return;
 
     dispatch(selectSchedule(computedId));

@@ -15,6 +15,17 @@
     flex: 0 1 auto;
   }
 
+  .term-select {
+    height: $topbar-height - 13px;
+    width: 105px;
+    position: absolute;
+    top: 14px;
+    right: $topbar-height + 17px;
+    z-index: 10;
+
+    pointer-events: auto;
+  }
+
   .status-icon {
     height: $topbar-height - 13px;
     width: $topbar-height - 13px;

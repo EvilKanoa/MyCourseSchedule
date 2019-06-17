@@ -74,15 +74,15 @@ class ScheduleView extends PureComponent {
         }))
     );
 
-    selectSectionButtonRenderer = (course) => ({ sectionId }) => (
+    selectSectionButtonRenderer = (course) => ({ id }) => (
         <div
             className='select-section-button button'
-            key={`${course}*${sectionId}`}
+            key={`${course}*${id}`}
             onClick={() => {
-                this.props.selectSection(`${course}*${sectionId}`);
+                this.props.selectSection(`${course}*${id}`);
             }}
         >
-            Select { sectionId }
+            Select { id }
         </div>
     );
 

@@ -7,7 +7,7 @@ const initialState = {
     courses: Storage.getCourses() || [],
     loading: false,
     error: '',
-    term: 'W19',
+    term: 'F19',
 };
 
 // base selectors
@@ -24,6 +24,11 @@ export const getCoursesByCode = createSelector(
 );
 
 // action-creators
+export const setTerm = (term) => ({
+    type: 'SET_TERM',
+    term
+});
+
 const beginCourseFetch = () => ({
     type: 'BEGIN_COURSE_FETCH'
 });
@@ -59,6 +64,11 @@ export const fetchCourses = () => async (dispatch, getState) => {
 // reducer
 export default (state = initialState, { type, ...action }) => {
     switch (type) {
+        case 'SET_TERM': return {
+            ...state,
+            term: action.term
+        };
+
         case 'BEGIN_COURSE_FETCH': return {
             ...state,
             loading: true,
