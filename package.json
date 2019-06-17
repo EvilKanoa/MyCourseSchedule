@@ -10,7 +10,7 @@
     "start": "NODE_ENV=development webpack-dev-server --env.WEBADVISOR_API=https://webadvisor-api.herokuapp.com/ --config webpack.dev.js --colors --progress --no-info",
     "build": "NODE_ENV=production webpack --env.WEBADVISOR_API=https://webadvisor-api.herokuapp.com/ --config webpack.prod.js",
     "prod": "NODE_ENV=production http-server \"./dist\" -p ${PORT:=80} --utc --push-state",
-    "deploy": "yarn build && yarn prod"
+    "heroku-postbuild": "echo Skip builds on Heroku"
   },
   "engines": {
     "node": ">=10"
