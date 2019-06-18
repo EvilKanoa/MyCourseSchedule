@@ -10,6 +10,8 @@
     "start": "NODE_ENV=development webpack-dev-server --env.WEBADVISOR_API=https://webadvisor-api.herokuapp.com/ --config webpack.dev.js --colors --progress --no-info",
     "build": "NODE_ENV=production webpack --env.WEBADVISOR_API=https://webadvisor-api.herokuapp.com/ --config webpack.prod.js",
     "prod": "NODE_ENV=production http-server \"./dist\" -p ${PORT:=80} --utc --push-state",
+    "prettier": "prettier --write \"src/**/*.js\"",
+    "prettier-check": "prettier --check \"src/**/*.js\"",
     "heroku-postbuild": "echo Skip builds on Heroku"
   },
   "engines": {
@@ -19,6 +21,15 @@
   "browserslist": [
     "> 0.5%"
   ],
+  "prettier": {
+    "printWidth": 80,
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true,
+    "quoteProps": "consistent",
+    "trailingComma": "all",
+    "arrowParens": "avoid"
+  },
   "dependencies": {
     "spa-http-server": "0.9.0"
   },
