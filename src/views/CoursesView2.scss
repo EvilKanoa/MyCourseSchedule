@@ -1,0 +1,37 @@
+@import '_variables.scss';
+
+#view-courses {
+  display: flex;
+  flex-flow: column nowrap;
+
+  width: 90%;
+  max-width: 950px;
+  min-width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px 0;
+
+  .course-search {
+    padding: 10px 20px;
+    border-radius: 12px;
+    box-shadow: 1px 1px 12px 0 rgba($theme-color-dark, 0.6);
+    margin-bottom: 20px;
+
+    > input {
+      border: 0;
+      box-shadow: none;
+      outline: none;
+      color: inherit;
+      background: inherit;
+      padding: 0;
+      width: 100%;
+    }
+  }
+
+  .course-card {
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+  }
+}

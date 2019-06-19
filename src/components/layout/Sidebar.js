@@ -43,6 +43,7 @@ class Sidebar extends PureComponent {
         <SidebarButton title="Dashboard" icon={DashboardIcon} to="/dashboard" />
         <SidebarButton title="Schedule" icon={CalenderIcon} to="/schedule" />
         <SidebarButton title="Courses" icon={CoursesIcon} to="/courses" />
+        <SidebarButton title="Search" icon={CoursesIcon} to="/search" />
 
         <Footer />
       </div>

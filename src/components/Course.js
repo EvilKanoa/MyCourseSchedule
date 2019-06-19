@@ -170,6 +170,7 @@ class Course extends PureComponent {
       sectionElementRenderer,
       className,
     } = this.props;
+
     const isOpened = section => this.state.openedSections.includes(section.id);
 
     return (
@@ -202,7 +203,7 @@ class Course extends PureComponent {
             <div
               className={cx('course-section', {
                 expanded: isOpened(section),
-                closed: section.status === 'Closed',
+                closed: section.available === 0,
                 selected:
                   selectedSections.includes(section.id) ||
                   selectedSections.includes(`${data.code}*${section.id}`),
@@ -223,8 +224,10 @@ class Course extends PureComponent {
                       0}`}</p>
                   ) : (
                     <p>
-                      {section.status || ''} -{' '}
-                      {`${section.available || 0}/${section.capacity || 0}`}
+                      {section.available === 0 && section.capacity !== 0
+                        ? 'Closed'
+                        : 'Open'}{' '}
+                      - {`${section.available || 0}/${section.capacity || 0}`}
                     </p>
                   )}
                 </span>

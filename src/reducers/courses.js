@@ -8,6 +8,7 @@ const initialState = {
   loading: false,
   error: '',
   term: 'F19',
+  institution: 'UOG',
 };
 
 // base selectors
@@ -16,6 +17,7 @@ export const getCourses = state => getState(state).courses;
 export const isLoading = state => getState(state).loading;
 export const getError = state => getState(state).error;
 export const getTerm = state => getState(state).term;
+export const getInstitution = state => getState(state).institution;
 
 // computed selectors
 export const getCoursesByCode = createSelector(
@@ -27,6 +29,11 @@ export const getCoursesByCode = createSelector(
 export const setTerm = term => ({
   type: 'SET_TERM',
   term,
+});
+
+export const setInstitution = institution => ({
+  type: 'SET_INSTITUTION',
+  institution,
 });
 
 const beginCourseFetch = () => ({
@@ -69,6 +76,12 @@ export default (state = initialState, { type, ...action }) => {
       return {
         ...state,
         term: action.term,
+      };
+
+    case 'SET_INSTITUTION':
+      return {
+        ...state,
+        institution: action.intitution,
       };
 
     case 'BEGIN_COURSE_FETCH':

@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 
+import CourseContainer from "components/CourseContainer"
+
 class DashboardView extends PureComponent {
   render() {
     return (
@@ -8,7 +10,8 @@ class DashboardView extends PureComponent {
           Nothing to see here yet...
         </h1>
         <p style={{ textAlign: 'center', marginTop: '50px' }}>
-          But do check out the sidebar!
+          {/*But do check out the sidebar!*/}
+          <CourseContainer code={"CIS*1300"} institution={"UOG"} term={"F19"}/>
         </p>
       </div>
     );
