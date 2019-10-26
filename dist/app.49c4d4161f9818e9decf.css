@@ -441,6 +441,9 @@
       background-color: white;
       width: 100%;
       height: 100%; }
+      #view-schedule > .week-calendar.schedule .calendar-event p {
+        font-size: 12px;
+        line-height: 13px; }
   #view-schedule > .schedules {
     -webkit-box-flex: 1;
     -webkit-flex: 1 0 200px;
@@ -894,4 +897,4 @@ mark, audio, video {
   vertical-align: baseline; }
 
 
-/*# sourceMappingURL=app.04c6f41b0ebee2f30688.css.map*/
+/*# sourceMappingURL=app.49c4d4161f9818e9decf.css.map*/

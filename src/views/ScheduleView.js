@@ -83,9 +83,17 @@ class ScheduleView extends PureComponent {
                 <div className='course-meeting'>
                     <p>{ meeting.course }*{ meeting.section }</p>
                     <p>{ meeting.content }</p>
+                    <p>{ meeting.location }</p>
                 </div>
             )
         }))
+    );
+
+    getCourseColours = defaultMemoize(selectedCourses =>
+        _.reduce(selectedCourses, (acc, code, idx) => {
+            acc[code] = COURSE_PALETTE[idx % COURSE_PALETTE.length];
+            return acc;
+        }, {})
     );
 
     selectSectionButtonRenderer = (course) => ({ id }) => (
@@ -154,6 +162,22 @@ class ScheduleView extends PureComponent {
               )
         );
 
+    eventRenderer = (event, day, events) => (
+        <div
+            className='default-calendar-event calendar-event'
+            style={this.overlaps(event, events) ? {
+                backgroundColor:
+                    this.getCourseColours(this.props.selectedCourses)[event.course],
+                opacity: '0.25'
+            } : {
+                backgroundColor:
+                    this.getCourseColours(this.props.selectedCourses)[event.course]
+            }}
+        >
+            { event.content }
+        </div>
+    )
+
     render() {
         const {
             courses,
@@ -167,15 +191,6 @@ class ScheduleView extends PureComponent {
             prevSelectedSchedule,
             hightlightSections
         } = this.state;
-
-        const courseColours = _.reduce(
-          selectedCourses,
-          (acc, code, idx) => {
-            acc[code] = COURSE_PALETTE[idx % COURSE_PALETTE.length];
-            return acc;
-          },
-          {}
-        );
 
         return (
             <div id='view-schedule'>
@@ -222,7 +237,10 @@ class ScheduleView extends PureComponent {
                                 data={courses[code]}
                                 mini={true}
                                 key={code}
-                                titleStyle={{ backgroundColor: courseColours[code] }}
+                                titleStyle={{
+                                    backgroundColor:
+                                        this.getCourseColours(selectedCourses)[code]
+                                }}
                                 selectedSections={selectedSections}
                                 sectionElementRenderer={this.selectSectionButtonRenderer(code)}
                                 onSectionClick={this.onSectionClick(code)}
@@ -242,21 +260,7 @@ class ScheduleView extends PureComponent {
                     interval={30}
                     weekStart={'monday'}
                     events={this.getEventsForSchedule(selectedSchedule)}
-                    eventRenderer={
-                      (event, day, events) => (
-                        <div
-                          className='default-calendar-event calendar-event'
-                          style={this.overlaps(event, events) ? {
-                            backgroundColor: courseColours[event.course],
-                            opacity: '0.25'
-                          } : {
-                            backgroundColor: courseColours[event.course]
-                          }}
-                        >
-                          { event.content }
-                        </div>
-                      )
-                    }
+                    eventRenderer={this.eventRenderer}
                 />
 
                 <Card className='schedules'>
