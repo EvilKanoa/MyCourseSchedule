@@ -95,8 +95,12 @@
       }
     }
 
-    &.selected .section-header {
+    &.selected .section-header, &.highlighted .section-header {
       background: rgba($theme-color-primary, 0.25);
+    }
+
+    &.selected.highlighted .section-header {
+      background: rgba($theme-color-accent, 0.25);
     }
 
     .section-body {

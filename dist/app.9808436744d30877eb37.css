@@ -229,8 +229,10 @@
           box-shadow: 1px 1px 12px 0 rgba(0, 0, 0, 0.75); }
           .course-widget .sections .course-section .section-header .icon.icon-button:hover {
             box-shadow: inset 1px 1px 20px -8px rgba(0, 0, 0, 0.6); }
-    .course-widget .sections .course-section.selected .section-header {
+    .course-widget .sections .course-section.selected .section-header, .course-widget .sections .course-section.highlighted .section-header {
       background: rgba(127, 226, 255, 0.25); }
+    .course-widget .sections .course-section.selected.highlighted .section-header {
+      background: rgba(209, 99, 43, 0.25); }
     .course-widget .sections .course-section .section-body {
       display: -webkit-box;
       display: -webkit-flex;
@@ -889,4 +891,4 @@ mark, audio, video {
   vertical-align: baseline; }
 
 
-/*# sourceMappingURL=app.a39cb343700c19505889.css.map*/
+/*# sourceMappingURL=app.9808436744d30877eb37.css.map*/

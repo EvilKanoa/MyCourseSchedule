@@ -25,6 +25,19 @@ import Course, {computeEvents} from 'components/Course';
 
 import './ScheduleView.scss';
 
+const COURSE_PALETTE = [
+  '#F0B27A',
+  '#F7DC6F',
+  '#82E088',
+  '#85C1E9',
+  '#BB8FCE',
+  '#BFC9CA',
+  '#00FFFF',
+  '#00FF00',
+  '#FF00FF',
+  '#FFFF00'
+];
+
 @connect(
     (state) => ({
         courses: getCoursesByCode(state),
@@ -45,7 +58,8 @@ class ScheduleView extends PureComponent {
         super();
 
         this.state = {
-            searched: []
+            searched: [],
+            prevSelectedSchedule: undefined
         };
     }
 
@@ -86,8 +100,36 @@ class ScheduleView extends PureComponent {
         </div>
     );
 
-    onSectionClick = (course) => (id) =>
+    onSectionClick = (course) => (id) => {
+        this.setState({ prevSelectedSchedule: undefined });
         this.props.selectSection(`${course}*${id}`);
+    }
+
+    onSectionMouseOver = (course) => (id) => {
+        const fullId = `${course}*${id}`;
+        if (!this.state.prevSelectedSchedule &&
+            !this.props.selectedSections.includes(fullId)
+        ) {
+            this.setState({
+              prevSelectedSchedule: this.props.selectedSchedule.id,
+              hightlightSections: [
+                  fullId,
+                  _.find(this.props.selectedSections,
+                      (sectionId) => sectionId.startsWith(course)
+                  )
+              ]
+            });
+        }
+        this.props.selectSection(`${course}*${id}`);
+    }
+
+    onSectionMouseOut = (course) => (id) => {
+        const { prevSelectedSchedule } = this.state;
+        if (prevSelectedSchedule) {
+            this.setState({ prevSelectedSchedule: undefined });
+            this.props.selectSchedule(prevSelectedSchedule);
+        }
+    }
 
     updateCourses = (searched) => {
         this.setState({
@@ -104,13 +146,13 @@ class ScheduleView extends PureComponent {
     };
 
     overlaps = (event, events) =>
-      _.some(events, other => other.course !== event.course
-        && other.day === event.day
-        && (
-            (event.start >= other.start && event.start <= other.end) ||
-            (event.end >= other.start && event.end <= other.end)
-          )
-      );
+        _.some(events, other => other.course !== event.course
+            && other.day === event.day
+            && (
+                (event.start >= other.start && event.start <= other.end) ||
+                (event.end >= other.start && event.end <= other.end)
+              )
+        );
 
     render() {
         const {
@@ -120,7 +162,20 @@ class ScheduleView extends PureComponent {
             selectedSchedule,
             selectedSections
         } = this.props;
-        const { searched } = this.state;
+        const {
+            searched,
+            prevSelectedSchedule,
+            hightlightSections
+        } = this.state;
+
+        const courseColours = _.reduce(
+          selectedCourses,
+          (acc, code, idx) => {
+            acc[code] = COURSE_PALETTE[idx % COURSE_PALETTE.length];
+            return acc;
+          },
+          {}
+        );
 
         return (
             <div id='view-schedule'>
@@ -167,6 +222,9 @@ class ScheduleView extends PureComponent {
                                 selectedSections={selectedSections}
                                 sectionElementRenderer={this.selectSectionButtonRenderer(code)}
                                 onSectionClick={this.onSectionClick(code)}
+                                onSectionMouseOver={this.onSectionMouseOver(code)}
+                                onSectionMouseOut={this.onSectionMouseOut(code)}
+                                highlightSections={prevSelectedSchedule && hightlightSections}
                             />
                         </div>
                     )) }
@@ -185,9 +243,11 @@ class ScheduleView extends PureComponent {
                         <div
                           className='default-calendar-event calendar-event'
                           style={this.overlaps(event, events) ? {
-                            backgroundColor: '#ff9b94',
+                            backgroundColor: courseColours[event.course],
                             opacity: '0.25'
-                          } : {}}
+                          } : {
+                            backgroundColor: courseColours[event.course]
+                          }}
                         >
                           { event.content }
                         </div>

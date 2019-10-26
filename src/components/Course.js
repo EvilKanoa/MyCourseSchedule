@@ -65,7 +65,10 @@ class Course extends PureComponent {
         mini: PropTypes.bool,
         selectedSections: PropTypes.array,
         sectionElementRenderer: PropTypes.func,
+        highlightSections: PropTypes.arrayOf(PropTypes.string),
         onSectionClick: PropTypes.func,
+        onSectionMouseOver: PropTypes.func,
+        onSectionMouseOut: PropTypes.func,
         data: PropTypes.shape({
             code: PropTypes.string.isRequired,
             name: PropTypes.string,
@@ -94,6 +97,7 @@ class Course extends PureComponent {
     static defaultProps = {
         mini: false,
         selectedSections: [],
+        highlightSections: [],
         sectionElementRenderer: () => {},
         calendar: false,
     };
@@ -178,7 +182,8 @@ class Course extends PureComponent {
             mini,
             selectedSections,
             sectionElementRenderer,
-            className
+            className,
+            highlightSections
         } = this.props;
         const isOpened = (section) => this.state.openedSections.includes(section.id);
 
@@ -216,7 +221,9 @@ class Course extends PureComponent {
                                     expanded: isOpened(section),
                                     closed: section.status === 'Closed',
                                     selected: selectedSections.includes(section.id) ||
-                                        selectedSections.includes(`${data.code}*${section.id}`)
+                                        selectedSections.includes(`${data.code}*${section.id}`),
+                                    highlighted: highlightSections.includes(section.id) ||
+                                        highlightSections.includes(`${data.code}*${section.id}`)
                                 }
                             )}
                             key={`${data.code}*${section.id}`}
@@ -226,6 +233,12 @@ class Course extends PureComponent {
                                 onClick={() => this.props.onSectionClick ?
                                       this.props.onSectionClick(section.id) :
                                       this.toggleSection(section)
+                                }
+                                onMouseOver={() => this.props.onSectionMouseOver &&
+                                    this.props.onSectionMouseOver(section.id)
+                                }
+                                onMouseOut={() => this.props.onSectionMouseOut &&
+                                  this.props.onSectionMouseOut(section.id)
                                 }
                             >
                                 <span className='section-title'>
