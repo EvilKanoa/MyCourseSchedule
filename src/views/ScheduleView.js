@@ -111,13 +111,13 @@ class ScheduleView extends PureComponent {
             !this.props.selectedSections.includes(fullId)
         ) {
             this.setState({
-              prevSelectedSchedule: this.props.selectedSchedule.id,
-              hightlightSections: [
-                  fullId,
-                  _.find(this.props.selectedSections,
-                      (sectionId) => sectionId.startsWith(course)
-                  )
-              ]
+                prevSelectedSchedule: this.props.selectedSchedule.id,
+                hightlightSections: [
+                    fullId,
+                    _.find(this.props.selectedSections,
+                        (sectionId) => sectionId.startsWith(course)
+                    )
+                ]
             });
         }
         this.props.selectSection(`${course}*${id}`);
@@ -208,7 +208,10 @@ class ScheduleView extends PureComponent {
                     </Card>
 
                     { _.map(selectedCourses, (code) => (
-                        <div className='selected-course' key={code}>
+                        <div
+                            className='selected-course'
+                            key={code}
+                        >
                             <div
                                 className='remove-button'
                                 onClick={() => this.toggleSelectedCourse(code)}
@@ -219,6 +222,7 @@ class ScheduleView extends PureComponent {
                                 data={courses[code]}
                                 mini={true}
                                 key={code}
+                                titleStyle={{ backgroundColor: courseColours[code] }}
                                 selectedSections={selectedSections}
                                 sectionElementRenderer={this.selectSectionButtonRenderer(code)}
                                 onSectionClick={this.onSectionClick(code)}

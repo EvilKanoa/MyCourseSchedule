@@ -69,6 +69,8 @@ class Course extends PureComponent {
         onSectionClick: PropTypes.func,
         onSectionMouseOver: PropTypes.func,
         onSectionMouseOut: PropTypes.func,
+        titleStyle: PropTypes.object,
+        sectionTitleStyle: PropTypes.object,
         data: PropTypes.shape({
             code: PropTypes.string.isRequired,
             name: PropTypes.string,
@@ -100,6 +102,8 @@ class Course extends PureComponent {
         highlightSections: [],
         sectionElementRenderer: () => {},
         calendar: false,
+        titleStyle: {},
+        sectionTitleStyle: {},
     };
 
     constructor() {
@@ -183,13 +187,15 @@ class Course extends PureComponent {
             selectedSections,
             sectionElementRenderer,
             className,
-            highlightSections
+            highlightSections,
+            titleStyle,
+            sectionTitleStyle
         } = this.props;
         const isOpened = (section) => this.state.openedSections.includes(section.id);
 
         return (
             <div className={cx('course-widget', { mini }, className)}>
-                <span className='title'>
+                <span className='title' style={titleStyle}>
                     { mini ?
                         `${data.code} ${data.name || ''}` :
                         `${data.code} ${data.name || ''} (${data.term || ''}) [${data.credits || ''}]`
@@ -211,7 +217,9 @@ class Course extends PureComponent {
                     </div>
                 }
 
-                <div className='sections-header'>Sections</div>
+                <div className='sections-header' style={sectionTitleStyle}>
+                    Sections
+                </div>
                 <div className='sections'>
                     { _.map(data.sections, (section) =>  (
                         <div

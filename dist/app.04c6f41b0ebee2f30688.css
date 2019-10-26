@@ -115,12 +115,15 @@
   -moz-box-sizing: border-box;
        box-sizing: border-box; }
   .course-widget .title {
-    width: auto;
+    width: 100%;
     -webkit-align-self: center;
         -ms-flex-item-align: center;
             align-self: center;
     font-size: 20px;
-    font-weight: bolder; }
+    font-weight: bolder;
+    border-radius: 7px;
+    margin: -2px -4px;
+    padding: 2px 4px; }
   .course-widget .details {
     display: -webkit-box;
     display: -webkit-flex;
@@ -891,4 +894,4 @@ mark, audio, video {
   vertical-align: baseline; }
 
 
-/*# sourceMappingURL=app.9808436744d30877eb37.css.map*/
+/*# sourceMappingURL=app.04c6f41b0ebee2f30688.css.map*/
