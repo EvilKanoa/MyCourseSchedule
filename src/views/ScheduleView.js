@@ -50,7 +50,7 @@ class ScheduleView extends PureComponent {
     }
 
     getMiniSchedules = defaultMemoize((schedules, selectedScheduleId) =>
-        _.map(schedules, (schedule) => (
+        _.map(_.take(_.values(schedules), 50), (schedule) => (
             <MiniSchedule
                 schedule={schedule}
                 selected={selectedScheduleId === schedule.id}
@@ -86,6 +86,9 @@ class ScheduleView extends PureComponent {
         </div>
     );
 
+    onSectionClick = (course) => (id) =>
+        this.props.selectSection(`${course}*${id}`);
+
     updateCourses = (searched) => {
         this.setState({
             searched
@@ -99,6 +102,15 @@ class ScheduleView extends PureComponent {
             this.props.selectCourse(code);
         }
     };
+
+    overlaps = (event, events) =>
+      _.some(events, other => other.course !== event.course
+        && other.day === event.day
+        && (
+            (event.start >= other.start && event.start <= other.end) ||
+            (event.end >= other.start && event.end <= other.end)
+          )
+      );
 
     render() {
         const {
@@ -154,6 +166,7 @@ class ScheduleView extends PureComponent {
                                 key={code}
                                 selectedSections={selectedSections}
                                 sectionElementRenderer={this.selectSectionButtonRenderer(code)}
+                                onSectionClick={this.onSectionClick(code)}
                             />
                         </div>
                     )) }
@@ -167,6 +180,19 @@ class ScheduleView extends PureComponent {
                     interval={30}
                     weekStart={'monday'}
                     events={this.getEventsForSchedule(selectedSchedule)}
+                    eventRenderer={
+                      (event, day, events) => (
+                        <div
+                          className='default-calendar-event calendar-event'
+                          style={this.overlaps(event, events) ? {
+                            backgroundColor: '#ff9b94',
+                            opacity: '0.25'
+                          } : {}}
+                        >
+                          { event.content }
+                        </div>
+                      )
+                    }
                 />
 
                 <Card className='schedules'>

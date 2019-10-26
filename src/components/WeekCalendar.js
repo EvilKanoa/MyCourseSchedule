@@ -173,7 +173,7 @@ class WeekCalendar extends PureComponent {
                             gridRowEnd: this.gridify(event.end - start, precision) + 2
                         }}
                     >
-                        {renderer(event, day)}
+                        {renderer(event, day, events)}
                     </div>
                 );
             })

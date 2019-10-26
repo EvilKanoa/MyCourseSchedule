@@ -218,6 +218,17 @@
         -webkit-align-self: center;
             -ms-flex-item-align: center;
                 align-self: center; }
+        .course-widget .sections .course-section .section-header .icon.icon-button {
+          pointer-events: auto;
+          -webkit-user-select: none;
+             -moz-user-select: none;
+              -ms-user-select: none;
+                  user-select: none;
+          cursor: pointer;
+          border-radius: 2px;
+          box-shadow: 1px 1px 12px 0 rgba(0, 0, 0, 0.75); }
+          .course-widget .sections .course-section .section-header .icon.icon-button:hover {
+            box-shadow: inset 1px 1px 20px -8px rgba(0, 0, 0, 0.6); }
     .course-widget .sections .course-section.selected .section-header {
       background: rgba(127, 226, 255, 0.25); }
     .course-widget .sections .course-section .section-body {
@@ -421,7 +432,10 @@
     box-shadow: -1px -1px 12px -2px rgba(0, 0, 0, 0.6);
     background: rgba(127, 226, 255, 0.1); }
     #view-schedule > .week-calendar.schedule .calendar-event {
-      text-align: center; }
+      text-align: center;
+      background-color: white;
+      width: 100%;
+      height: 100%; }
   #view-schedule > .schedules {
     -webkit-box-flex: 1;
     -webkit-flex: 1 0 200px;
@@ -875,4 +889,4 @@ mark, audio, video {
   vertical-align: baseline; }
 
 
-/*# sourceMappingURL=app.0b6a984d6749ecb508e7.css.map*/
+/*# sourceMappingURL=app.a39cb343700c19505889.css.map*/

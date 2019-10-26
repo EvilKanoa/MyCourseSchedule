@@ -65,6 +65,7 @@ class Course extends PureComponent {
         mini: PropTypes.bool,
         selectedSections: PropTypes.array,
         sectionElementRenderer: PropTypes.func,
+        onSectionClick: PropTypes.func,
         data: PropTypes.shape({
             code: PropTypes.string.isRequired,
             name: PropTypes.string,
@@ -161,6 +162,14 @@ class Course extends PureComponent {
         ));
     };
 
+    onExpandClick = (section) => (event) => {
+        if (this.props.onSectionClick) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.toggleSection(section)
+        }
+    }
+
 
     render() {
         const {
@@ -214,9 +223,30 @@ class Course extends PureComponent {
                         >
                             <div
                                 className='section-header'
-                                onClick={() => this.toggleSection(section)}
+                                onClick={() => this.props.onSectionClick ?
+                                      this.props.onSectionClick(section.id) :
+                                      this.toggleSection(section)
+                                }
                             >
-                                <span className='section-title'>{ !mini && 'Section' } { section.id }</span>
+                                <span className='section-title'>
+                                    { !mini && 'Section ' }
+                                    { section.id }
+                                    { mini && <br /> }
+                                    { mini && (
+                                      isOpened(section) ?
+                                          <CollapseIcon
+                                            size={16}
+                                            className='icon icon-button'
+                                            onClick={this.onExpandClick(section)}
+                                          /> :
+                                          <ExpandIcon
+                                            size={15}
+                                            className='icon icon-button'
+                                            onClick={this.onExpandClick(section)}
+                                          />
+                                      )
+                                    }
+                                </span>
                                 <span className='section-faculty'>{ section.faculty || '' }</span>
                                 <span className='section-status'>
                                     { mini ?

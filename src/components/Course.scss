@@ -79,6 +79,19 @@
         flex: 0 1 22px;
         text-align: center;
         align-self: center;
+
+        &.icon-button {
+          pointer-events: auto;
+          user-select: none;
+          cursor: pointer;
+
+          border-radius: 2px;
+          box-shadow: 1px 1px 12px 0 rgba($theme-color-dark, 0.75);
+
+          &:hover {
+            box-shadow: inset 1px 1px 20px -8px rgba($theme-color-dark, 0.6);
+          }
+        }
       }
     }
 

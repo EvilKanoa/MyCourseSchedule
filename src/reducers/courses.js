@@ -7,7 +7,7 @@ const initialState = {
     courses: Storage.getCourses() || [],
     loading: false,
     error: '',
-    term: 'F19',
+    term: 'W20',
 };
 
 // base selectors
