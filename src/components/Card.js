@@ -4,7 +4,7 @@ import cx from 'classnames';
 import './Card.scss';
 
 export default ({ className, children, ...rest }) => (
-    <div {...rest} className={cx('card', className)}>
-        { children }
-    </div>
+  <div {...rest} className={cx('card', className)}>
+    {children}
+  </div>
 );

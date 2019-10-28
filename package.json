@@ -10,13 +10,19 @@
     "start": "NODE_ENV=development webpack-dev-server --env.WEBADVISOR_API=https://webadvisor-api.herokuapp.com/ --config webpack.dev.js --colors --progress --no-info",
     "build": "NODE_ENV=production webpack --env.WEBADVISOR_API=https://webadvisor-api.herokuapp.com/ --config webpack.prod.js",
     "prod": "NODE_ENV=production http-server \"./dist\" -p ${PORT:=80} --utc --push-state",
-    "heroku-postbuild": "echo Skip builds on Heroku"
+    "heroku-postbuild": "echo Skip builds on Heroku",
+    "lint": "prettier --check \"src/**/*.js\"",
+    "lint-fix": "prettier --write \"src/**/*.js\""
   },
   "engines": {
     "node": ">=10"
   },
   "author": "Kanoa Haley",
   "browserslist": "> 0.01%",
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
   "dependencies": {
     "spa-http-server": "0.9.0"
   },
@@ -40,6 +46,7 @@
     "mini-css-extract-plugin": "0.4.4",
     "node-sass": "4.9.4",
     "postcss-loader": "3.0.0",
+    "prettier": "^1.18.2",
     "prop-types": "15.6.2",
     "react": "16.6.0",
     "react-dom": "16.6.0",
