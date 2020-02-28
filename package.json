@@ -15,7 +15,7 @@
     "lint-fix": "prettier --write \"src/**/*.js\""
   },
   "engines": {
-    "node": ">=10"
+    "node": "10.x"
   },
   "author": "Kanoa Haley",
   "browserslist": "> 0.01%",
