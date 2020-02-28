@@ -10,7 +10,7 @@
     "start": "NODE_ENV=development webpack-dev-server --env.WEBADVISOR_API=https://webadvisor-api.herokuapp.com/ --config webpack.dev.js --colors --progress --no-info",
     "build": "NODE_ENV=production webpack --env.WEBADVISOR_API=https://webadvisor-api.herokuapp.com/ --config webpack.prod.js",
     "prod": "NODE_ENV=production http-server \"./dist\" -p ${PORT:=80} --utc --push-state",
-    "heroku-postbuild": "echo Skip builds on Heroku",
+    "heroku-postbuild": "yarn build",
     "lint": "prettier --check \"src/**/*.js\"",
     "lint-fix": "prettier --write \"src/**/*.js\""
   },
@@ -24,9 +24,6 @@
     "trailingComma": "es5"
   },
   "dependencies": {
-    "spa-http-server": "0.9.0"
-  },
-  "devDependencies": {
     "@babel/core": "7.1.2",
     "@babel/plugin-proposal-class-properties": "7.1.0",
     "@babel/plugin-proposal-decorators": "7.1.2",
@@ -59,6 +56,7 @@
     "reselect": "4.0.0",
     "sass-loader": "7.1.0",
     "sifter": "0.5.3",
+    "spa-http-server": "0.9.0",
     "webpack": "4.23.1",
     "webpack-cli": "3.1.2",
     "webpack-dev-server": "3.1.10",
