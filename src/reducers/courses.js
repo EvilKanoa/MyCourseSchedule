@@ -18,9 +18,8 @@ export const getError = state => getState(state).error;
 export const getTerm = state => getState(state).term;
 
 // computed selectors
-export const getCoursesByCode = createSelector(
-  [getCourses],
-  courses => _.keyBy(courses, 'code')
+export const getCoursesByCode = createSelector([getCourses], courses =>
+  _.keyBy(courses, 'code')
 );
 
 // action-creators

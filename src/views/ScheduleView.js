@@ -81,18 +81,21 @@ class ScheduleView extends PureComponent {
   );
 
   getEventsForSchedule = defaultMemoize(({ meetings }) =>
-    _.map(computeEvents(meetings, ({ type }) => type), meeting => ({
-      ...meeting,
-      content: (
-        <div className="course-meeting">
-          <p>
-            {meeting.course}*{meeting.section}
-          </p>
-          <p>{meeting.content}</p>
-          <p>{meeting.location}</p>
-        </div>
-      ),
-    }))
+    _.map(
+      computeEvents(meetings, ({ type }) => type),
+      meeting => ({
+        ...meeting,
+        content: (
+          <div className="course-meeting">
+            <p>
+              {meeting.course}*{meeting.section}
+            </p>
+            <p>{meeting.content}</p>
+            <p>{meeting.location}</p>
+          </div>
+        ),
+      })
+    )
   );
 
   getCourseColours = defaultMemoize(selectedCourses =>

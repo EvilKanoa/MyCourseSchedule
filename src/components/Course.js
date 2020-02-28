@@ -42,17 +42,20 @@ export const computeEvents = (
   meetings,
   contentRenderer = defaultContentRenderer
 ) =>
-  _.map(_.filter(meetings, ({ type }) => type !== 'EXAM'), meeting => ({
-    ...meeting,
-    days: [meeting.day],
-    start:
-      parseInt(meeting.start.split(':')[0], 10) * 60 +
-      parseInt(meeting.start.split(':')[1], 10),
-    end:
-      parseInt(meeting.end.split(':')[0], 10) * 60 +
-      parseInt(meeting.end.split(':')[1], 10),
-    content: contentRenderer(meeting),
-  }));
+  _.map(
+    _.filter(meetings, ({ type }) => type !== 'EXAM'),
+    meeting => ({
+      ...meeting,
+      days: [meeting.day],
+      start:
+        parseInt(meeting.start.split(':')[0], 10) * 60 +
+        parseInt(meeting.start.split(':')[1], 10),
+      end:
+        parseInt(meeting.end.split(':')[0], 10) * 60 +
+        parseInt(meeting.end.split(':')[1], 10),
+      content: contentRenderer(meeting),
+    })
+  );
 
 class Course extends PureComponent {
   static propTypes = {
